@@ -1,0 +1,1124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Time at Work</title><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet"><style>
+.rt-body{--ink:#1f1830;--purple:#5b3491;--orange:#e8731c;--odark:#a9500f;--obtn:#c2560f;--soft:#fff4e8;--bg:#f2eff6;--line:#d8cfe5;--muted:#5e5374;--good:#1f7a45;--bad:#b3261e;margin:0;background:var(--bg);color:var(--ink);font-family:'Atkinson Hyperlegible',Verdana,'Segoe UI',sans-serif;font-size:var(--fs,20px);line-height:1.45}
+.rt-body #rt-app{max-width:860px;margin:0 auto;padding:16px;box-sizing:border-box}
+.rt-body .rt-card{background:#fff;border:2px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+.rt-body h1{font-size:1.6em;margin:0 0 12px;color:var(--purple)}
+.rt-body h2{font-size:1.3em;margin:0 0 8px;color:var(--purple)}
+.rt-body .h3{font-size:1.1em;margin:18px 0 8px}
+.rt-body h1:focus,.rt-body h2:focus,.rt-body .q:focus{outline:none}
+.rt-body .center{text-align:center}
+.rt-body .center .tools{justify-content:center}
+.rt-body .note{margin:0 0 10px}
+.rt-body .small{font-size:.85em;color:var(--muted)}
+.rt-body .prog{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:6px 0 14px;color:var(--muted)}
+.rt-body .dots{display:flex;gap:6px;flex-wrap:wrap}
+.rt-body .dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--purple);box-sizing:border-box}
+.rt-body .dot.done{background:var(--purple)}
+.rt-body .dot.now{background:var(--orange);border-color:var(--odark)}
+.rt-body .timer{font-family:Verdana,sans-serif;font-variant-numeric:tabular-nums}
+.rt-body .btn{font:inherit;font-weight:700;min-height:52px;padding:10px 20px;border-radius:12px;border:2px solid var(--purple);background:#fff;color:var(--purple);cursor:pointer}
+.rt-body .btn.main{background:var(--obtn);border-color:var(--odark);color:#fff}
+.rt-body .btn:disabled{cursor:default;opacity:.8}
+.rt-body .btn:focus-visible,.rt-body .say:focus-visible,.rt-body input:focus-visible{outline:4px solid var(--ink);outline-offset:2px}
+.rt-body .say{font-size:1em;min-width:48px;min-height:48px;border-radius:50%;border:2px solid var(--line);background:#fff;cursor:pointer;vertical-align:middle;margin-left:4px}
+.rt-body .say.sm{min-width:40px;min-height:40px;font-size:.8em;margin-left:6px}
+.rt-body .tsay{white-space:nowrap}
+.rt-body .chwrap{display:flex;gap:6px;align-items:center}
+.rt-body .chwrap .choice{flex:1}
+.rt-body .tools{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}
+.rt-body .hhead{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.rt-body .hnorm{font-size:.9em;color:var(--muted)}
+.rt-body .hsub{display:inline-block;margin-left:10px;font-size:.85em;color:var(--muted)}
+.rt-body .hcal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.rt-body .hday{border:3px solid var(--line);border-radius:12px;padding:8px 6px;text-align:center;display:flex;flex-direction:column;gap:3px;align-items:center;background:#fff}
+.rt-body .hday.open{border-color:#1f7a45;background:#f1faf4}
+.rt-body .hday.early{border-color:#c2560f;background:#fff4e8}
+.rt-body .hday.late{border-color:#2b5ea8;background:#eef4fc}
+.rt-body .hday.late .st{color:#1d4785}
+.rt-body .hday.closed{border-color:#b3261e;background:#fdecea}
+.rt-body .hday .dn{font-weight:700}
+.rt-body .hday .dd{font-size:.85em;color:var(--muted)}
+.rt-body .hday .st{font-weight:700;font-size:.9em}
+.rt-body .hday.closed .st{color:#8a1c12}
+.rt-body .hday.early .st{color:#8a3d0b}
+.rt-body .hday.open .st{color:#16603a}
+.rt-body .hday .hrs{font-family:Verdana,sans-serif;font-size:.78em;display:flex;flex-direction:column}
+.rt-body .hday .nt{font-size:.8em;font-style:italic}
+.rt-body .hday .me{font-size:.8em;font-weight:700;color:var(--purple);border:2px solid var(--purple);border-radius:999px;padding:0 8px;background:#fff}
+.rt-body .hday.hl{animation:rtglow 1s ease-in-out infinite alternate}
+.rt-body .hday .say.sm{margin:2px 0 0}
+@media (max-width:700px){.rt-body .hcal{grid-template-columns:1fr}.rt-body .hday{display:grid;grid-template-columns:1fr auto;text-align:left;align-items:center;column-gap:10px}.rt-body .hday .say.sm{grid-column:2;grid-row:1 / span 3}}
+.rt-body .lbl{display:block;font-weight:700;margin:14px 0 6px}
+.rt-body .name-in{font:inherit;font-size:1.1em;padding:12px;border:2px solid var(--line);border-radius:12px;width:100%;max-width:420px;box-sizing:border-box}
+.rt-body .lvlist li{margin:4px 0}
+.rt-body .task{margin-top:6px}
+.rt-body .clockwrap{display:flex;justify-content:center;margin:6px 0}
+.rt-body .clockwrap svg{width:min(300px,72vw);height:auto}
+.rt-body .legend{text-align:center;font-weight:700;margin:4px 0 10px}
+.rt-body .hand-h{color:#5b3491}
+.rt-body .hand-m{color:#a9500f}
+.rt-body .q{font-weight:700;font-size:1.1em;margin:14px 0 10px}
+.rt-body .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.rt-body .choice{min-height:76px;font-size:1.35em;font-family:Verdana,sans-serif;font-variant-numeric:tabular-nums}
+.rt-body .choice[aria-pressed=true]{background:var(--soft);border-color:var(--obtn);box-shadow:0 0 0 3px var(--orange)}
+.rt-body .choice.right{background:#e6f4ec;border-color:var(--good);color:var(--good);opacity:1}
+.rt-body .shiftrow{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:stretch}
+.rt-body .shift,.rt-body .arrive{border:2px solid var(--line);border-radius:14px;padding:12px 16px;text-align:center;background:#fbfaff;display:flex;flex-direction:column;justify-content:center}
+.rt-body .shift .lbl,.rt-body .arrive .lbl{margin:0 0 6px}
+.rt-body .bigtime{font-family:Verdana,sans-serif;font-size:1.6em;font-weight:700;font-variant-numeric:tabular-nums}
+.rt-body .arrive .clockwrap svg{width:min(240px,64vw)}
+.rt-body .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.rt-body .pill{border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-weight:700;color:var(--muted)}
+.rt-body .pill.on{border-color:var(--obtn);color:var(--ink);background:var(--soft)}
+.rt-body .pill.done{border-color:var(--good);color:var(--good)}
+.rt-body .tc{overflow-x:auto}
+.rt-body .tc-title{font-weight:700;margin-bottom:6px}
+.rt-body .tc table{border-collapse:collapse;width:100%;font-family:Verdana,sans-serif;font-variant-numeric:tabular-nums;font-size:.95em}
+.rt-body .tc th,.rt-body .tc td{border:2px solid var(--ink);padding:10px 12px;text-align:left}
+.rt-body .tc thead th{background:#ece6f5}
+.rt-body .tc td.hl{background:var(--soft);animation:rtglow 1s ease-in-out infinite alternate}
+@keyframes rtglow{from{box-shadow:inset 0 0 0 3px #e8731c}to{box-shadow:inset 0 0 0 7px #e8731c}}
+.rt-body .answer{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;margin-top:6px}
+.rt-body .ansrow{display:flex;gap:10px;align-items:center}
+.rt-body .ans{font-family:Verdana,sans-serif;font-size:1.5em;width:4.5em;min-height:60px;text-align:center;border:3px dashed var(--obtn);border-radius:12px;background:#fff;color:var(--ink);box-sizing:border-box}
+.rt-body .unit{font-weight:700;font-size:1.1em}
+.rt-body .pad{display:grid;grid-template-columns:repeat(3,64px);gap:8px}
+.rt-body .key{min-height:60px;min-width:64px;padding:0;font-family:Verdana,sans-serif;font-size:1.3em}
+.rt-body .key.wide{grid-column:span 3}
+.rt-body .fb{border-radius:12px;padding:12px 16px;margin:16px 0 0;border:2px solid;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.rt-body .fb.good{border-color:var(--good);background:#e6f4ec}
+.rt-body .fb.bad{border-color:var(--bad);background:#fdecea}
+.rt-body .fb.info{border-color:var(--orange);background:var(--soft)}
+.rt-body .score{font-size:1.3em}
+.rt-body .sum li{margin:4px 0}
+.rt-body .report{white-space:pre-wrap;font-size:.8em;background:#f6f2fb;padding:12px;border-radius:10px;word-break:break-all}
+.rt-body .sr{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.rt-body.group #rt-app{max-width:1500px;padding:14px 24px}
+.rt-body.group .rt-card{padding:18px 28px}
+.rt-body.group h2{font-size:1.25em}
+.rt-body.group .gsplit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+.rt-body.group .gright .choices{grid-template-columns:1fr}
+.rt-body.group .gright .q{margin-top:0}
+.rt-body.group .shiftrow{flex-direction:column;align-items:stretch}
+@media (max-width:900px){.rt-body.group .gsplit{grid-template-columns:1fr}}
+.rt-body.group .clockwrap svg{width:min(56vh,44vw)}
+.rt-body.group .arrive .clockwrap svg{width:min(42vh,40vw)}
+.rt-body.group .choice{min-height:96px;font-size:1.5em}
+.rt-body.group .choice.wrongpick{border-color:var(--bad);color:var(--bad);background:#fdecea;opacity:1}
+.rt-body.group .gtop{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.rt-body.group .gtitle{font-weight:700;color:var(--purple);font-size:1.1em}
+.rt-body.group .gtabs{display:flex;flex-wrap:wrap;gap:6px}
+.rt-body.group .gtab{font:inherit;font-size:.7em;font-weight:700;min-height:40px;padding:4px 12px;border-radius:999px;border:2px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.rt-body.group .gtab[aria-current=true]{border-color:var(--purple);background:var(--purple);color:#fff}
+.rt-body.group .gans{display:inline-flex;align-items:center;gap:14px;font-family:Verdana,sans-serif;font-size:1.6em;font-weight:700}
+.rt-body.group .gbox{min-width:3em;text-align:center;border:4px dashed var(--obtn);border-radius:14px;padding:6px 18px;background:#fff}
+.rt-body.group .gbox.shown{border-style:solid;border-color:var(--good);color:var(--good);background:#e6f4ec}
+.rt-body.group .reveal{font-size:1.15em;font-weight:700}
+.rt-body.group .talk{margin-top:16px;border:2px solid var(--purple);border-radius:14px;padding:14px 18px;background:#f6f2fb}
+.rt-body.group .talk .tk{color:var(--purple)}
+.rt-body.group .talk ul{margin:0;padding-left:1.2em}
+.rt-body.group .talk li{margin:4px 0}
+.rt-body.group .hcal{gap:14px}
+.rt-body.group .hday{padding:6px;font-size:.85em;gap:1px}
+.rt-body.group .hday .hrs{flex-direction:row;gap:6px}
+.rt-body.group .hday .nt{font-size:.75em}
+.rt-body.group .hcalwrap ~ .q{font-size:1em}
+.rt-body.group .prog{margin:2px 0 8px}
+.rt-body.group .hhead{margin-bottom:4px}
+.rt-body.group .hcalwrap ~ .fb,.rt-body.group .task ~ .fb{margin-top:10px}
+.rt-body.group .talk{margin-top:10px;padding:10px 18px}
+.rt-body.group .hcalwrap ~ .choices .choice{min-height:70px;font-size:.95em}
+.rt-body.group .hcalwrap ~ .q{margin:8px 0}
+.rt-body.group .choices{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.rt-body.group .choice{font-size:1.1em}
+.rt-body.group .gctl{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;align-items:center}
+.rt-body.group .gctl .spacer{flex:1}
+.rt-body.group .keyhelp{font-size:.6em;color:var(--muted);margin-top:8px}
+@media (max-width:520px){.rt-body #rt-app{padding:8px}.rt-body .rt-card{padding:14px}.rt-body .choices{grid-template-columns:1fr}.rt-body .answer{flex-direction:column}}
+</style></head><body class="rt-body"><main id="rt-app"></main><script>(function tawRuntime(CFG, LIB){
+  'use strict';
+  var app = document.getElementById('rt-app');
+  var FS = {large:'20px', xl:'24px', huge:'28px'};
+  if (CFG.group){ FS = {large:'28px', xl:'32px', huge:'38px'}; document.body.classList.add('group'); }
+  document.body.style.setProperty('--fs', FS[CFG.size] || '20px');
+  function h(tag, props){
+    var el = document.createElement(tag);
+    if (props) for (var k in props){
+      var v = props[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') el.className = v;
+      else if (k === 'svg') el.innerHTML = v;
+      else if (k === 'value') el.value = v;
+      else if (k.slice(0, 2) === 'on' && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    add(el, Array.prototype.slice.call(arguments, 2));
+    return el;
+  }
+  function add(el, kids){ kids.forEach(function(c){ if (c == null || c === false) return; if (Array.isArray(c)) add(el, c); else el.appendChild(typeof c === 'object' ? c : document.createTextNode(String(c))); }); }
+
+  var F = CFG.look !== 'adult';
+  var EMOJI_RE = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu;
+  function words(t){
+    t = String(t).replace(EMOJI_RE, '');
+    t = t.replace(/\b12:00 PM\b/g, '12 noon').replace(/\b12:00 AM\b/g, '12 midnight');
+    t = t.replace(/\b(\d{1,2}):00\b/g, "$1 o'clock").replace(/\b(\d{1,2}):0(\d)\b/g, '$1 oh $2').replace(/\b(\d{1,2}):(\d\d)\b/g, '$1 $2');
+    t = t.replace(/\bAM\b/g, 'A.M.').replace(/\bPM\b/g, 'P.M.');
+    t = t.replace(/\b(\d+)\.5\b/g, '$1 and a half');
+    t = t.replace(/[+=×÷✓✗➜_*#|]/g, function(c){ return {'+':' plus ', '=':' equals ', '×':' times ', '÷':' divided by '}[c] || ' '; });
+    return t;
+  }
+  function say(t){
+    if (CFG.read === 'off' || !('speechSynthesis' in window)) return;
+    try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(words(t)); u.rate = Number(CFG.rate) || 0.85; speechSynthesis.speak(u); } catch(e){}
+  }
+  var live = h('div', {class:'sr', 'aria-live':'polite'}); document.body.appendChild(live);
+  function tell(t){ live.textContent = ''; setTimeout(function(){ live.textContent = String(t).replace(EMOJI_RE, ''); }, 40); if (CFG.read === 'auto') say(t); }
+  function sayBtn(t, what){ if (CFG.read === 'off') return null; return h('button', {type:'button', class:'say', 'aria-label':'Read ' + (what || 'this') + ' out loud', onclick:function(){ say(typeof t === 'function' ? t() : t); }}, '🔊'); }
+
+  var META = LIB.META, face = LIB.face, ampm = LIB.ampm;
+  var ORDER = ['c1', 'c2', 'c3', 't1', 't2', 't3', 'h1', 'h2', 'h3'].filter(function(k){ return CFG.levels && CFG.levels[k]; });
+  if (!ORDER.length) ORDER = ['c1'];
+  var R = LIB.rng((Date.now() ^ Math.floor(Math.random() * 1e9)) >>> 0);
+  var S = {name:''};
+  function fresh(){
+    var name = S.name || '';
+    S = {screen:'start', name:name, li:0, lv:{}, t0:0, focusH:true, msg:''};
+    ORDER.forEach(function(k){ S.lv[k] = {items:LIB.gen(k, R, CFG), i:0, misses:0, hints:0, shown:0, rec:[]}; });
+  }
+  function newItem(){ S.cur = {sel:null, step:1, inp:'', tries:0, hints:0, sh:0, done:false, shown:false, fb:null, glow:false}; }
+  function K(){ return ORDER[S.li]; }
+  function LV(){ return S.lv[K()]; }
+  function IT(){ var L = LV(); return L.items[L.i]; }
+  function dir(k){ return LIB.dirOf(k, CFG, false); }
+  function levelTitle(i){ return (ORDER.length > 1 ? 'Level ' + (i + 1) + ' of ' + ORDER.length + ': ' : '') + META[ORDER[i]].title; }
+  function usesBox(k, c){ return k === 't2' || k === 't3' || (k === 'c3' && c.step === 2); }
+
+  function render(){
+    var ae = document.activeElement, key = ae && ae.getAttribute && ae.getAttribute('data-k');
+    app.textContent = '';
+    app.appendChild(view());
+    var target = null;
+    if (S.focusH){ target = app.querySelector('h1, h2'); if (target) target.setAttribute('tabindex', '-1'); S.focusH = false; }
+    else if (S.focusK){ target = app.querySelector('[data-k="' + S.focusK + '"]'); S.focusK = null; }
+    else if (key){ target = app.querySelector('[data-k="' + key + '"]'); }
+    if (target) target.focus();
+  }
+  function view(){
+    if (S.screen === 'group') return groupView();
+    if (S.screen === 'start') return startView();
+    if (S.screen === 'between') return betweenView();
+    if (S.screen === 'finish') return finishView();
+    return levelView();
+  }
+
+  /* ---- Start ---- */
+  function startView(){
+    return h('div', {class:'rt-card'},
+      h('h1', null, CFG.title, F ? ' ⏰' : ''),
+      CFG.directions ? h('p', {class:'note'}, CFG.directions, ' ', sayBtn(CFG.directions, 'the directions')) : null,
+      h('p', null, h('b', null, 'In this activity:')),
+      h('ol', {class:'lvlist'}, ORDER.map(function(k, i){ return h('li', null, (ORDER.length > 1 ? 'Level ' + (i + 1) + ': ' : '') + META[k].title); })),
+      h('label', {for:'rt-name', class:'lbl'}, 'Your name'),
+      h('input', {id:'rt-name', 'data-k':'name', type:'text', autocomplete:'off', class:'name-in', value:S.name, oninput:function(e){ S.name = e.target.value; }, onkeydown:function(e){ if (e.key === 'Enter') begin(); }}),
+      S.msg ? h('div', {class:'fb info', role:'status'}, S.msg) : null,
+      h('div', {class:'tools'}, h('button', {type:'button', class:'btn main', 'data-k':'start', onclick:begin}, 'Start', F ? ' ▶️' : ''))
+    );
+  }
+  function begin(){
+    S.name = (S.name || '').trim();
+    if (!S.name){ S.msg = 'Type your name first.'; S.focusK = 'name'; render(); tell(S.msg); return; }
+    S.msg = ''; S.t0 = Date.now(); goLevel(0);
+  }
+  function goLevel(i){ S.li = i; S.screen = 'level'; newItem(); S.focusH = true; render(); tell(levelTitle(i) + '. ' + dir(ORDER[i])); }
+
+  /* ---- Pieces ---- */
+  function smallSay(t, what){ if (CFG.read === 'off') return null; return h('button', {type:'button', class:'say sm', 'aria-label':'Read ' + (what || t) + ' out loud', onpointerdown:function(e){ e.preventDefault(); }, onclick:function(){ say(typeof t === 'function' ? t() : t); }}, '🔊'); }
+  function timeSay(txt, spoken){ return h('span', {class:'tsay'}, txt, smallSay(spoken || txt, spoken || txt)); }
+  function choiceRow(list, c, okIdx){
+    return h('div', {class:'choices', role:'group', 'aria-label':'Answer choices'}, list.map(function(lab, j){
+      var right = c.done && j === okIdx, wrong = CFG.group && c.done && c.sel === j && j !== okIdx;
+      return h('div', {class:'chwrap'},
+        h('button', {type:'button', class:'btn choice' + (right ? ' right' : '') + (wrong ? ' wrongpick' : ''), 'data-k':'ch' + j + '-' + c.step, 'aria-pressed':String(c.sel === j), disabled:c.done ? true : null,
+          onclick:function(){ c.sel = j; render(); if (CFG.read !== 'off') say(lab); }}, (right ? '✓ ' : wrong ? '✗ ' : '') + lab),
+        smallSay(right ? 'The answer is ' + lab : lab, 'choice ' + lab));
+    }));
+  }
+  function numPad(c, allowDot){
+    function press(kk){
+      if (kk === '⌫') c.inp = c.inp.slice(0, -1);
+      else if (kk === 'C') c.inp = '';
+      else if (kk === '.'){ if (c.inp.indexOf('.') < 0) c.inp += (c.inp ? '.' : '0.'); }
+      else if (c.inp.length < 5) c.inp += kk;
+      var box = app.querySelector('.ans'); if (box) box.value = c.inp;
+    }
+    function keyBtn(kk, label, cls){ return h('button', {type:'button', class:'btn key' + (cls ? ' ' + cls : ''), 'aria-label':label, onpointerdown:function(e){ e.preventDefault(); }, onclick:function(){ press(kk); }}, kk); }
+    var keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9'].map(function(kk){ return keyBtn(kk, kk); });
+    keys.push(allowDot ? keyBtn('.', 'Point') : h('span'));
+    keys.push(keyBtn('0', '0'), keyBtn('⌫', 'Delete'), keyBtn('C', 'Clear', 'wide'));
+    return h('div', {class:'pad', role:'group', 'aria-label':'Number pad'}, keys);
+  }
+  function answerBox(c, unit, label, allowDot, tool){
+    if (CFG.group){ var it = IT(), val = c.done ? (K() === 'c3' ? String(it.mins) : LIB.hrsText(K() === 't2' ? it.hrs : it.total)) : '?';
+      return h('div', {class:'answer'}, h('div', {class:'gans'}, h('span', {class:'gbox' + (c.done ? ' shown' : '')}, val), h('span', null, unit), c.done ? smallSay(val + ' ' + unit, 'the answer') : null)); }
+    var inp = h('input', {class:'ans', 'data-k':'ans', type:'text', inputmode:allowDot ? 'decimal' : 'numeric', autocomplete:'off', 'aria-label':label, value:c.inp, readonly:c.done ? true : null,
+      oninput:function(e){ var v = e.target.value.replace(allowDot ? /[^0-9.]/g : /[^0-9]/g, ''); c.inp = v; if (e.target.value !== v) e.target.value = v; },
+      onkeydown:function(e){ if (e.key === 'Enter'){ e.preventDefault(); check(); } }});
+    return h('div', {class:'answer'}, h('div', {class:'ansrow'}, inp, h('span', {class:'unit'}, unit), smallSay(function(){ return c.inp ? (c.done ? 'The answer is ' : 'Your answer is ') + c.inp + ' ' + unit + '.' : 'The box is empty. Type your answer.'; }, 'your answer')), (tool === 'pad' && !c.done) ? numPad(c, allowDot) : null);
+  }
+  function legend(){ return CFG.colors ? h('p', {class:'legend'}, h('span', {class:'hand-h'}, 'Short hand = hour'), '  ·  ', h('span', {class:'hand-m'}, 'Long hand = minutes')) : null; }
+  function clockBox(m){ return h('div', {class:'clockwrap', svg:LIB.clockSVG(m, {colors:CFG.colors})}); }
+  function shiftRow(it){
+    return h('div', {class:'shiftrow'},
+      h('div', {class:'shift'}, h('span', {class:'lbl'}, 'Your shift starts at'), h('div', {class:'bigtime'}, timeSay(ampm(it.start), 'Your shift starts at ' + ampm(it.start)))),
+      h('div', {class:'arrive'}, h('span', {class:'lbl'}, 'You got to work at'), clockBox(it.arrive), CFG.c2digital ? h('div', {class:'bigtime'}, timeSay(face(it.arrive), 'You got to work at ' + face(it.arrive))) : null));
+  }
+  function cardTable(rows, opt){
+    opt = opt || {};
+    function cell(j, col, txt, day){ return h('td', {class:opt.hl && opt.hl[0] === j && opt.hl[1] === col ? 'hl' : null}, timeSay(txt, day + ' ' + (col === 'in' ? 'in' : 'out') + ': ' + txt)); }
+    return h('div', {class:'tc'}, h('div', {class:'tc-title'}, (F ? '🕒 ' : '') + 'Timecard'),
+      h('table', null,
+        h('thead', null, h('tr', null, h('th', {scope:'col'}, 'Day'), h('th', {scope:'col'}, 'In'), h('th', {scope:'col'}, 'Out'), opt.hours ? h('th', {scope:'col'}, 'Hours') : null)),
+        h('tbody', null, rows.map(function(r, j){ return h('tr', null, h('th', {scope:'row'}, r.day), cell(j, 'in', ampm(r.inM), r.day), cell(j, 'out', ampm(r.outM), r.day), opt.hours ? h('td', null, timeSay(LIB.hrsText(r.hrs), r.day + ': ' + LIB.hrsText(r.hrs) + ' hours')) : null); }))));
+  }
+  function okIdx(it){ for (var j = 0; j < it.choices.length; j++) if (it.choices[j].type === 'ok') return j; return -1; }
+  function qSpeak(text, choices){ return h('p', {class:'q'}, text, ' ', sayBtn(text + (choices ? ' Is it ' + choices.slice(0, -1).join(', ') + ', or ' + choices[choices.length - 1] + '?' : ''), 'the question')); }
+
+  function hCal(it, c){
+    var wk = it.wk, P = wk.place;
+    var norm = 'Normal hours: ' + ampm(wk.open) + ' to ' + ampm(wk.close);
+    return h('div', {class:'hcalwrap'},
+      h('div', {class:'hhead'}, h('span', null, h('b', null, (F ? '📌 ' : '') + wk.sign + ': ' + wk.title), h('span', {class:'hsub'}, wk.sub), smallSay(wk.sign + ' for ' + P + '. ' + wk.sub.replace(' · ', '. ') + '.', 'the notice title')), h('span', {class:'hnorm'}, norm, smallSay('Normal hours for ' + P + ' are ' + ampm(wk.open) + ' to ' + ampm(wk.close) + '.', 'the normal hours'))),
+      h('div', {class:'hcal'}, wk.days.map(function(d){
+        var glow = it.hl === d.i && (c.glow || c.done);
+        return h('div', {class:'hday ' + d.status + (glow ? ' hl' : '')},
+          h('div', {class:'dn'}, d.day), h('div', {class:'dd'}, d.date),
+          h('div', {class:'st'}, LIB.STATUS_ICON[d.status] + LIB.hStatus(d)),
+          d.status !== 'closed' ? h('div', {class:'hrs'}, h('span', null, ampm(d.open)), h('span', null, 'to ' + ampm(d.close))) : null,
+          d.note ? h('div', {class:'nt'}, d.note) : null,
+          it.my.indexOf(d.i) >= 0 ? h('div', {class:'me'}, '★ Your day') : null,
+          smallSay(LIB.hSpeak(d, P) + (it.my.indexOf(d.i) >= 0 ? ' This is your day.' : ''), d.day));
+      })));
+  }
+  function hTask(it, c){
+    var labs = it.choices.map(function(x){ return x.t; });
+    return h('div', {class:'task'}, hCal(it, c),
+      h('p', {class:'q'}, it.q, ' ', sayBtn(it.q + ' Is it: ' + labs.slice(0, -1).join('; ') + '; or ' + labs[labs.length - 1] + '?', 'the question')),
+      choiceRow(labs, c, okIdx(it)));
+  }
+  function hCheck(it, c){
+    if (c.sel == null) return {empty:'Tap an answer first. Then tap Check.'};
+    var ch = it.choices[c.sel];
+    if (ch.type === 'ok') return {ok:true};
+    return {msg:c.tries === 0 || !it.fb2 ? ch.fb : it.fb2};
+  }
+  function hHints(it){ return it.hint; }
+  var TASKS = {
+    h1:hTask, h2:hTask, h3:hTask,
+    c1:function(it, c){
+      return h('div', {class:'task'}, clockBox(it.m), legend(), qSpeak('What time does the clock show?', it.choices.map(function(ch){ return face(ch.m); })),
+        choiceRow(it.choices.map(function(ch){ return face(ch.m); }), c, okIdx(it)));
+    },
+    c2:function(it, c){
+      var q = 'Were you early, on time, or late?';
+      return h('div', {class:'task'}, shiftRow(it), legend(),
+        h('p', {class:'q'}, q, ' ', sayBtn('Your shift starts at ' + ampm(it.start) + '. ' + (CFG.c2digital ? 'You got there at ' + face(it.arrive) + '. ' : '') + q, 'the question')),
+        choiceRow(['Early', 'On time', 'Late'], c, ['early', 'ontime', 'late'].indexOf(it.kind)));
+    },
+    c3:function(it, c){
+      var pills = h('div', {class:'pills'}, h('span', {class:'pill ' + (c.step === 1 ? 'on' : 'done')}, (c.step > 1 ? '✓ ' : '') + '1. Early or late?'), h('span', {class:'pill' + (c.step === 2 ? ' on' : '')}, '2. How many minutes?'));
+      var body = [pills, shiftRow(it), legend()];
+      if (c.step === 1){
+        body.push(h('p', {class:'q'}, 'Were you early or late? ', sayBtn('Your shift starts at ' + ampm(it.start) + '. ' + (CFG.c2digital ? 'You got there at ' + face(it.arrive) + '. ' : '') + 'Were you early or late?', 'the question')));
+        body.push(choiceRow(['Early', 'Late'], c, it.kind === 'early' ? 0 : 1));
+      } else {
+        var w = it.kind === 'early' ? 'early' : 'late';
+        body.push(qSpeak('You were ' + w + '. How many minutes ' + w + '?'));
+        body.push(answerBox(c, 'minutes', 'Minutes ' + w, false, CFG.c3tool));
+      }
+      return h('div', {class:'task'}, body);
+    },
+    t1:function(it, c){
+      var day = it.card[it.day].day, q = 'What time did you clock ' + (it.which === 'in' ? 'IN' : 'OUT') + ' on ' + day + '?';
+      return h('div', {class:'task'}, cardTable(it.card, {hl:(c.glow || c.done) ? [it.day, it.which] : null}),
+        h('p', {class:'q'}, q, ' ', sayBtn(function(){ var ch = it.choices.map(function(x){ return ampm(x.m); }); return q.replace(' IN ', ' in ').replace(' OUT ', ' out ') + ' Is it ' + ch.slice(0, -1).join(', ') + ', or ' + ch[ch.length - 1] + '?'; }, 'the question')),
+        choiceRow(it.choices.map(function(ch){ return ampm(ch.m); }), c, okIdx(it)));
+    },
+    t2:function(it, c){
+      var q = 'You clocked in at ' + ampm(it.inM) + '. You clocked out at ' + ampm(it.outM) + '. How many hours did you work?';
+      return h('div', {class:'task'},
+        h('div', {class:'tc'}, h('table', null, h('thead', null, h('tr', null, h('th', {scope:'col'}, 'In'), h('th', {scope:'col'}, 'Out'))), h('tbody', null, h('tr', null, h('td', null, timeSay(ampm(it.inM), 'In at ' + ampm(it.inM))), h('td', null, timeSay(ampm(it.outM), 'Out at ' + ampm(it.outM))))))),
+        h('p', {class:'q'}, 'How many hours did you work? ', sayBtn(q, 'the question')),
+        answerBox(c, 'hours', 'Hours worked', !!CFG.t2half, CFG.t2tool));
+    },
+    t3:function(it, c){
+      var q = 'How many hours did you work this week?';
+      return h('div', {class:'task'}, cardTable(it.rows, {hours:CFG.t3show}), qSpeak(q),
+        answerBox(c, 'hours in all', 'Total hours', !!CFG.t3half, CFG.t3tool));
+    }
+  };
+
+  /* ---- Checking ---- */
+  function num(s){ if (!s || s === '.') return null; var v = parseFloat(s); return isNaN(v) ? null : v; }
+  function near(a, b){ return Math.abs(a - b) < 0.001; }
+  var CHECK = {
+    h1:hCheck, h2:hCheck, h3:hCheck,
+    c1:function(it, c){
+      if (c.sel == null) return {empty:'Tap a time first. Then tap Check.'};
+      var ch = it.choices[c.sel];
+      if (ch.type === 'ok') return {ok:true};
+      if (ch.type === 'swap') return {msg:'That mixes up the hands. The short hand shows the hour. The long hand shows the minutes.'};
+      if (ch.type === 'hour') return {msg:it.M >= 30 ? 'Look at the short hand. It has not reached the ' + (it.H % 12 + 1) + ' yet. Use the number it just passed.' : 'Look at the short hand again. Find the number it is on or just passed.'};
+      return {msg:'The hour is right. Look at the long hand again. Start at the 12 and count by 5s.'};
+    },
+    c2:function(it, c){
+      if (c.sel == null) return {empty:'Tap Early, On time, or Late first.'};
+      var pk = ['early', 'ontime', 'late'][c.sel];
+      if (pk === it.kind) return {ok:true, msg:it.kind === 'early' ? 'Getting to work a little early is a great habit.' : it.kind === 'late' ? 'If you might be late, call or text your boss before your shift.' : 'You got there right at the start time.'};
+      if (c.tries === 0) return {msg:'Look again. Is ' + face(it.arrive) + ' before, after, or the same as ' + face(it.start) + '?'};
+      var rel = it.arrive < it.start ? 'before' : it.arrive > it.start ? 'after' : 'the same as';
+      return {msg:'The clock shows ' + face(it.arrive) + '. That is ' + rel + ' ' + face(it.start) + '. Before means early. After means late. The same time means on time.'};
+    },
+    c3:function(it, c){
+      if (c.step === 1){
+        if (c.sel == null) return {empty:'Tap Early or Late first.'};
+        if ((c.sel === 0 ? 'early' : 'late') === it.kind) return {step:'Yes, you were ' + it.kind + '. Now find how many minutes.'};
+        return {msg:c.tries === 0 ? 'Look again. Is ' + face(it.arrive) + ' before or after ' + face(it.start) + '?' : face(it.arrive) + ' is ' + (it.kind === 'early' ? 'before' : 'after') + ' ' + face(it.start) + '. Before means early. After means late.'};
+      }
+      var v = num(c.inp); if (v == null) return {empty:'Type the number of minutes first.'};
+      var a = face(Math.min(it.arrive, it.start)), b = face(Math.max(it.arrive, it.start));
+      if (v === it.mins) return {ok:true};
+      if (v === LIB.hm(it.arrive).m) return {msg:'That is the minutes on the clock. Find how many minutes are between ' + a + ' and ' + b + '.'};
+      if (v % 5 !== 0) return {msg:'Count by 5s from ' + a + ' to ' + b + '.'};
+      return {msg:(v < it.mins ? 'Too few. ' : 'Too many. ') + 'Count by 5s from ' + a + ' to ' + b + '.'};
+    },
+    t1:function(it, c){
+      if (c.sel == null) return {empty:'Tap a time first. Then tap Check.'};
+      var ch = it.choices[c.sel], day = it.card[it.day].day;
+      if (ch.type === 'ok') return {ok:true};
+      if (ch.type === 'col') return {msg:'That is the ' + (it.which === 'in' ? 'Out' : 'In') + ' time. Look in the ' + (it.which === 'in' ? 'In' : 'Out') + ' column.'};
+      return {msg:'That time is not in the ' + day + ' row. Find the ' + day + ' row first.'};
+    },
+    t2:function(it, c){
+      var v = num(c.inp); if (v == null) return {empty:'Type the number of hours first.'};
+      if (near(v, it.hrs)) return {ok:true};
+      var hi = LIB.hm(it.inM).h % 12 || 12, ho = LIB.hm(it.outM).h % 12 || 12;
+      var span = ' from ' + face(it.inM) + ' to ' + face(it.outM) + '.';
+      var noon = it.inM < 720 && it.outM > 720 ? ' Remember: after 12 comes 1.' : '';
+      if (v === ho || v === hi) return {msg:'That is a time on the clock. Hours worked means how long you were there. Count the hours' + span + noon};
+      if (near(Math.abs(v - it.hrs), 0.5)) return {msg:'Close. Check the half hour. 30 minutes is half an hour. Type it as .5'};
+      if (near(Math.abs(v - it.hrs), 1)) return {msg:'Close. Count the hours' + span + ' Count one jump at a time.' + noon};
+      return {msg:'Not yet. Count the hours' + span + noon};
+    },
+    t3:function(it, c){
+      var v = num(c.inp); if (v == null) return {empty:'Type the total hours first.'};
+      if (near(v, it.total)) return {ok:true};
+      if (v === it.rows.length) return {msg:'That is the number of days. Add up the hours for each day.'};
+      for (var j = 0; j < it.rows.length; j++) if (near(v, it.total - it.rows[j].hrs)) return {msg:'Close. It looks like one day was left out. Add every day.'};
+      return {msg:'Not yet. Add the hours one day at a time.'};
+    }
+  };
+  var HINTS = {
+    h1:hHints, h2:hHints, h3:hHints,
+    c1:function(it){
+      return ['The short hand shows the hour. The long hand shows the minutes.',
+        it.M === 0 ? 'The short hand is on the ' + it.H + '. The long hand points to the 12. That means ' + it.H + " o'clock." :
+        'The short hand is just past the ' + it.H + '. The long hand points to the ' + (it.M / 5) + '. Count by 5s: that is ' + it.M + ' minutes.'];
+    },
+    c2:function(it){ return ['Look at the time on the clock. Then look at the start time.', 'The clock shows ' + face(it.arrive) + '. Your shift starts at ' + face(it.start) + '. Before the start time is early. After is late.']; },
+    c3:function(it, c){
+      if (c.step === 1) return HINTS.c2(it);
+      var a = face(Math.min(it.arrive, it.start)), b = face(Math.max(it.arrive, it.start));
+      return ['Count by 5s from the earlier time to the later time.', 'Start at ' + a + '. Count 5, 10, 15 and keep going until you reach ' + b + '.'];
+    },
+    t1:function(it){ var col = it.which === 'in' ? 'In' : 'Out', day = it.card[it.day].day; return ['Find the ' + day + ' row. Then look in the ' + col + ' column.', 'Look at the box that is lit up. It is in the ' + day + ' row and the ' + col + ' column.']; },
+    t2:function(it){
+      var whole = Math.floor(it.hrs), steps = [];
+      for (var j = 1; j <= Math.min(whole, 4); j++) steps.push(face(it.inM + j * 60) + ' is ' + j);
+      return ['Count each hour from the In time to the Out time.', 'Start at ' + face(it.inM) + '. ' + steps.join('. ') + (whole > 4 ? '. Keep going to ' + face(it.outM) + '.' : '.') + (it.hrs % 1 ? ' Then 30 more minutes is half an hour.' : '')];
+    },
+    t3:function(it){
+      return ['Add the hours one day at a time.', CFG.t3show ? 'Add: ' + it.rows.map(function(r){ return LIB.hrsText(r.hrs); }).join(' + ') + '.' :
+        'First find the hours for each day. ' + it.rows[0].day + ' is ' + LIB.hrsText(it.rows[0].hrs) + ' hours. Do the same for each day. Then add them.'];
+    }
+  };
+  var PRAISE = ['Great job!', 'Nice work!', 'You got it!', 'Well done!'];
+  function check(){
+    var k = K(), it = IT(), c = S.cur;
+    if (c.done) return;
+    var res = CHECK[k](it, c);
+    if (res.empty){ c.fb = {kind:'info', text:res.empty}; S.focusK = usesBox(k, c) ? 'ans' : 'check'; render(); tell(res.empty); return; }
+    if (res.step){ c.step = 2; c.sel = null; c.sh = 0; c.fb = {kind:'good', text:(F ? '⭐ ' : '') + res.step}; S.focusK = 'ans'; render(); tell(res.step); return; }
+    if (res.ok){ finishItem(res.msg); return; }
+    c.tries++; LV().misses++;
+    c.fb = {kind:'bad', text:'✗ ' + res.msg}; S.focusK = usesBox(k, c) ? 'ans' : 'check'; render(); tell(res.msg);
+  }
+  function finishItem(extra){
+    var c = S.cur, L = LV();
+    c.done = true;
+    L.rec.push({q:LIB.itemLabel(K(), IT()), r:c.tries ? 2 : 1, t:c.tries, h:c.hints});
+    var text = (F ? PRAISE[Math.floor(Math.random() * PRAISE.length)] + ' ⭐' : 'Correct.') + (extra ? ' ' + extra : '');
+    c.fb = {kind:'good', text:text}; S.focusK = 'next'; render(); tell(text);
+  }
+  function hint(){
+    var c = S.cur; if (c.done) return;
+    c.hints++; c.sh++; LV().hints++;
+    var list = HINTS[K()](IT(), c), msg = list[Math.min(c.sh, list.length) - 1];
+    if (c.sh >= 2) c.glow = true;
+    c.fb = {kind:'info', text:(F ? '💡 ' : 'Hint: ') + msg}; S.focusK = 'hint'; render(); tell(msg);
+  }
+  function showMe(){
+    var c = S.cur, k = K(), it = IT(), L = LV(); if (c.done) return;
+    c.done = true; c.shown = true; L.shown++; L.misses++;
+    if (k === 'c1' || k === 't1' || k.charAt(0) === 'h') c.sel = okIdx(it);
+    if (k === 'c2') c.sel = ['early', 'ontime', 'late'].indexOf(it.kind);
+    if (k === 'c3'){ c.step = 2; c.inp = String(it.mins); }
+    if (k === 't2') c.inp = LIB.hrsText(it.hrs);
+    if (k === 't3') c.inp = LIB.hrsText(it.total);
+    L.rec.push({q:LIB.itemLabel(k, it), r:3, t:c.tries, h:c.hints});
+    var text = 'The answer is ' + LIB.answerText(k, it) + '.';
+    c.fb = {kind:'info', text:(F ? '👀 ' : '') + text}; S.focusK = 'next'; render(); tell(text);
+  }
+  function next(){
+    var L = LV(); L.i++;
+    if (L.i < L.items.length){
+      newItem(); render();
+      var q = app.querySelector('.q'); if (q){ q.setAttribute('tabindex', '-1'); q.focus(); }
+      tell('Item ' + (L.i + 1) + ' of ' + L.items.length + '.');
+      return;
+    }
+    if (S.li + 1 < ORDER.length){ S.screen = 'between'; S.focusH = true; render(); tell(betweenText()); return; }
+    finish();
+  }
+
+  /* ---- Level screen ---- */
+  function clockText(){ var s = S.t0 ? Math.floor((Date.now() - S.t0) / 1000) : 0; return (F ? '⏱ ' : 'Time ') + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function levelView(){
+    var k = K(), L = LV(), it = IT(), c = S.cur, d = dir(k);
+    var head = h('div', null,
+      h('h2', null, levelTitle(S.li), ' ', sayBtn(d, 'the directions')),
+      h('p', {class:'note'}, d),
+      h('div', {class:'prog'},
+        h('div', {class:'dots', 'aria-hidden':'true'}, L.items.map(function(_, j){ return h('span', {class:'dot' + (j < L.i ? ' done' : j === L.i ? ' now' : '')}); })),
+        h('span', null, 'Item ' + (L.i + 1) + ' of ' + L.items.length),
+        CFG.timer ? h('span', {class:'timer', id:'rt-timer'}, clockText()) : null));
+    var fb = c.fb ? h('div', {class:'fb ' + c.fb.kind, role:'status'}, h('span', null, c.fb.text), sayBtn(c.fb.text, 'the feedback')) : null;
+    var lastItem = L.i + 1 >= L.items.length;
+    var tools = c.done
+      ? h('div', {class:'tools'}, h('button', {type:'button', class:'btn main', 'data-k':'next', onclick:next}, (!lastItem ? 'Next' : S.li + 1 < ORDER.length ? 'Finish this level' : 'Finish') + ' ➜'))
+      : h('div', {class:'tools'},
+          h('button', {type:'button', class:'btn main', 'data-k':'check', onclick:check}, '✓ Check'),
+          CFG.hints ? h('button', {type:'button', class:'btn', 'data-k':'hint', onclick:hint}, (F ? '💡 ' : '') + 'Hint') : null,
+          CFG.showMe ? h('button', {type:'button', class:'btn', 'data-k':'show', onclick:showMe}, (F ? '👀 ' : '') + 'Show me') : null);
+    return h('div', {class:'rt-card'}, head, TASKS[k](it, c), fb, tools);
+  }
+  function betweenText(){ return 'Level ' + (S.li + 1) + ' done! Next: ' + META[ORDER[S.li + 1]].title + '.'; }
+  function betweenView(){
+    return h('div', {class:'rt-card center'},
+      h('h2', null, 'Level ' + (S.li + 1) + ' done!', F ? ' ⭐' : ''),
+      h('p', null, 'Next: Level ' + (S.li + 2) + ': ' + META[ORDER[S.li + 1]].title, ' ', sayBtn(betweenText(), 'this')),
+      h('div', {class:'tools'}, h('button', {type:'button', class:'btn main', 'data-k':'go', onclick:function(){ goLevel(S.li + 1); }}, 'Go to Level ' + (S.li + 2) + ' ➜')));
+  }
+
+  /* ---- Finish, proof and results ---- */
+  function proof(str){
+    str += '|E3-TAW-signature';
+    var h1 = 0x811c9dc5, h2 = 5381;
+    for (var i = 0; i < str.length; i++){ var ch = str.charCodeAt(i); h1 = Math.imul(h1 ^ ch, 16777619) >>> 0; h2 = (Math.imul(h2, 33) + ch) >>> 0; }
+    var a = ('0000' + h1.toString(36)).slice(-4) + ('0000' + h2.toString(36)).slice(-4);
+    return 'PRF-' + a.toUpperCase() + '-' + Math.floor(Date.now() / 1000).toString(36).slice(-4).toUpperCase();
+  }
+  function finish(){
+    var secs = Math.max(1, Math.round((Date.now() - S.t0) / 1000)), steps = 0, misses = 0;
+    ORDER.forEach(function(k){ var L = S.lv[k]; steps += L.items.length * META[k].steps; misses += L.misses; });
+    var acc = Math.round(100 * steps / (steps + misses)), passMark = Number(CFG.pass) || 80, pass = acc >= passMark, at = new Date().toISOString();
+    var pc = proof([S.name, acc, misses, secs, at].join('|'));
+    var obj = {v:1, n:S.name, a:CFG.title, at:at, s:secs, acc:acc, pr:passMark, pass:pass ? 1 : 0, pc:pc};
+    ORDER.forEach(function(k){ var L = S.lv[k]; obj[META[k].key] = {n:L.items.length, m:L.misses, h:L.hints, s:L.shown, it:L.rec.map(function(x){ return [x.q, x.r, x.t, x.h]; })}; });
+    var code = 'TAW1:' + btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+    S.result = {secs:secs, acc:acc, pass:pass, passMark:passMark, pc:pc, code:code, at:at};
+    S.report = report();
+    S.screen = 'finish'; S.focusH = true; render();
+    tell(F ? 'You finished! Great work.' : 'Activity complete.');
+    if (CFG.embedded && window.parent && window.parent !== window) try { window.parent.postMessage({type:'taw-result', code:code}, '*'); } catch(e){}
+  }
+  function itemWord(x){ return (x.r === 1 ? 'first try' : x.r === 3 ? 'shown' : 'on try ' + (x.t + 1)) + (x.h ? ', ' + x.h + (x.h === 1 ? ' hint' : ' hints') : ''); }
+  function report(){
+    var r = S.result, lines = ['Student: ' + S.name, 'Activity: ' + CFG.title, 'Date: ' + new Date(r.at).toLocaleDateString(), 'Time: ' + Math.floor(r.secs / 60) + ' min ' + (r.secs % 60) + ' sec', ''];
+    ORDER.forEach(function(k, i){
+      var L = S.lv[k];
+      lines.push('Level ' + (i + 1) + ' - ' + META[k].title + ': ' + L.items.length + ' items, ' + L.misses + ' misses, ' + L.hints + ' hints, ' + L.shown + ' shown');
+      L.rec.forEach(function(x){ lines.push('  - ' + x.q + ': ' + itemWord(x)); });
+    });
+    lines.push('', 'Score: ' + r.acc + '% (' + (r.pass ? 'Passed' : 'Needs practice') + ', pass mark ' + r.passMark + '%)', 'Proof code: ' + r.pc, '', 'Results code (for staff):', r.code);
+    return lines.join('\n');
+  }
+  function copyReport(){
+    function done(){ S.copied = true; S.focusK = 'copy'; render(); tell('Copied.'); }
+    function fallback(){ var ta = h('textarea', {class:'sr'}); ta.value = S.report; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} document.body.removeChild(ta); done(); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(S.report).then(done, fallback); else fallback();
+  }
+  function saveReport(){
+    var a = h('a', {href:URL.createObjectURL(new Blob([S.report], {type:'text/plain'})), download:'results-' + (S.name || 'student').replace(/[^a-z0-9]+/gi, '-').toLowerCase() + '.txt'});
+    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 800);
+  }
+  function finishView(){
+    var r = S.result, email = CFG.email || '', subj = (CFG.subject || CFG.title) + ' - ' + S.name;
+    return h('div', {class:'rt-card'},
+      h('h1', null, F ? 'You finished! 🎉' : 'Activity complete'),
+      CFG.showScore ? h('p', {class:'score'}, 'Score: ' + r.acc + '%  ', h('b', null, r.pass ? (F ? '✓ Passed ⭐' : '✓ Passed') : 'Needs more practice')) : null,
+      h('ul', {class:'sum'}, ORDER.map(function(k, i){ var L = S.lv[k], first = L.rec.filter(function(x){ return x.r === 1; }).length; return h('li', null, (ORDER.length > 1 ? 'Level ' + (i + 1) + ': ' : '') + META[k].title + ' — ' + first + ' of ' + L.items.length + ' right on the first try'); })),
+      h('h2', {class:'h3'}, 'Send your results to staff'),
+      h('div', {class:'tools'},
+        h('button', {type:'button', class:'btn main', 'data-k':'gmail', onclick:function(){ window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(email) + '&su=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(S.report), '_blank'); }}, (F ? '📧 ' : '') + 'Send with Gmail'),
+        h('button', {type:'button', class:'btn', onclick:function(){ location.href = 'mailto:' + email + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(S.report); }}, 'Email app'),
+        h('button', {type:'button', class:'btn', 'data-k':'copy', onclick:copyReport}, (F ? '📋 ' : '') + 'Copy results'),
+        h('button', {type:'button', class:'btn', onclick:saveReport}, (F ? '💾 ' : '') + 'Save results file')),
+      h('p', {class:'small'}, 'Gmail needs internet. No internet? Use Copy or Save.'),
+      S.copied ? h('div', {class:'fb good', role:'status'}, 'Copied. Paste it in an email or message to staff.') : null,
+      h('details', null, h('summary', null, 'See the full results'), h('pre', {class:'report'}, S.report)),
+      h('div', {class:'tools'}, h('button', {type:'button', class:'btn', onclick:function(){ S.name = ''; fresh(); render(); }}, 'Start over')));
+  }
+
+  setInterval(function(){ var el = document.getElementById('rt-timer'); if (el) el.textContent = clockText(); }, 1000);
+  /* ---- Group display (large screen, staff-led discussion; no names, no scoring) ---- */
+  var TALK = {
+    h1:['Where have you seen a notice like this? A door? A website? The TV news?', 'Which places do you go to every week? What would make them close?', 'How is a snow day different from a holiday?'],
+    h2:['Why would a place open late after a snowstorm?', 'What could go wrong if you did not check the notice?', 'Who could you ask if you are not sure of the hours?'],
+    h3:['Who needs to know when your schedule changes? Your ride? Your family?', 'How can you remember a schedule change? A calendar? A phone alarm?', 'How do you get ready for a Michigan winter storm?'],
+    c1:['Is this time in the morning or the afternoon on a work day?', 'What might you be doing at work at this time?', 'Where do you see clocks at work?'],
+    c2:['What should you do if you know you will be late?', 'How early should you get to work? Why?', 'What can make someone late? How can you plan for it?'],
+    c3:['What can you do with extra minutes when you get there early?', 'Who should you call or text if you are running late?', 'How might a boss feel if someone is late a lot?'],
+    t1:['Why do jobs use timecards?', 'What should you do if you forget to clock in?', 'Where would you find your timecard at a job?'],
+    t2:['Does a lunch break count as hours worked?', 'Why is it important to check your hours?', 'What would you say to your boss if your hours look wrong?'],
+    t3:['How do your hours connect to your paycheck?', 'What if you worked more hours than you planned?', 'How can you keep track of your own hours?']
+  };
+  var TALKH = {
+    h1:{weather:['How do you find out about snow days where you live?', 'How is a snow day different from a holiday?'], holiday:['Which places do you go to every week? Would they close for this holiday?', 'Where have you seen a holiday hours sign?'], other:['Why might a place close for a day with no holiday or storm?', 'Where have you seen a notice like this? A door? A website?']},
+    h2:{weather:['Why would a place open late after a snowstorm?', 'Why might a store stay open when the bank closes?'], holiday:['Why do places close early before a holiday?', 'What could go wrong if you did not check the holiday hours?'], other:['What could go wrong if you did not check the notice?', 'Who could you ask if you are not sure of the hours?']},
+    h3:{weather:['How do you get ready for a Michigan winter storm?', 'Who should you call if you cannot get to work safely?'], holiday:['What errands would you do before a holiday?', 'Who needs to know when your schedule changes? Your ride? Your family?'], other:['How can you remember a schedule change? A calendar? A phone alarm?', 'Who needs to know when your schedule changes?']}
+  };
+  function talkFor(k, it, i){
+    if (TALKH[k]){ var list = TALKH[k][it.wk.cat] || TALKH[k].other; return list[i % list.length]; }
+    return TALK[k][i % TALK[k].length];
+  }
+  function gStart(){ S = {screen:'group', name:'', li:0, lv:{}, focusH:true}; ORDER.forEach(function(k){ S.lv[k] = {items:LIB.gen(k, R, CFG), i:0, misses:0, hints:0, shown:0, rec:[]}; }); newItem(); render(); }
+  function gGo(li, i){ S.li = li; S.lv[ORDER[li]].i = i; newItem(); S.focusH = true; render(); tell(levelTitle(li) + '. Item ' + (i + 1) + '.'); }
+  function gNext(){ var L = LV(); if (L.i + 1 < L.items.length) gGo(S.li, L.i + 1); else if (S.li + 1 < ORDER.length) gGo(S.li + 1, 0); }
+  function gBack(){ var L = LV(); if (L.i > 0) gGo(S.li, L.i - 1); else if (S.li > 0) gGo(S.li - 1, S.lv[ORDER[S.li - 1]].items.length - 1); }
+  function gReveal(){ var c = S.cur; if (c.done) return; c.done = true; c.fb = null; var t = 'The answer is ' + LIB.answerText(K(), IT()) + '.'; S.focusK = 'gnext'; render(); tell(t); }
+  function gHint(){ var c = S.cur; if (c.done) return; c.sh++; var list = HINTS[K()](IT(), c), msg = list[Math.min(c.sh, list.length) - 1]; if (c.sh >= 2) c.glow = true; c.fb = {kind:'info', text:(F ? '💡 ' : 'Hint: ') + msg}; S.focusK = 'ghint'; render(); tell(msg); }
+  function gNew(){ ORDER.forEach(function(k){ S.lv[k].items = LIB.gen(k, R, CFG); }); gGo(0, 0); }
+  function gFull(){ try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch(e){} }
+  function gSplit(task, extra){
+    var left = h('div', {class:'gleft'}), right = h('div', {class:'gright'});
+    Array.prototype.slice.call(task.children).forEach(function(ch){
+      if (/\b(clockwrap|shiftrow|tc|legend|pills|hcalwrap)\b/.test(ch.className)) left.appendChild(ch); else right.appendChild(ch);
+    });
+    right.appendChild(extra);
+    return h('div', {class:'task gsplit'}, left, right);
+  }
+  function groupView(){
+    var k = K(), L = LV(), it = IT(), c = S.cur, d = dir(k);
+    var first = S.li === 0 && L.i === 0, last = S.li === ORDER.length - 1 && L.i === L.items.length - 1;
+    var top = h('div', {class:'gtop'}, h('div', {class:'gtitle'}, CFG.title, F ? ' ⏰' : ''),
+      ORDER.length > 1 ? h('div', {class:'gtabs', role:'group', 'aria-label':'Go to a level'}, ORDER.map(function(kk, j){ return h('button', {type:'button', class:'gtab', 'aria-current':String(j === S.li), onclick:function(){ gGo(j, 0); }}, 'Level ' + (j + 1)); })) : null);
+    var tq = talkFor(k, it, L.i);
+    var talk = c.done && CFG.gdiscuss !== false ? h('div', {class:'talk'}, h('b', {class:'tk'}, (F ? '💬 ' : '') + 'Talk about it: '), h('span', null, tq), ' ', sayBtn(tq, 'the talk question')) : null;
+    var reveal = c.done ? h('div', {class:'fb good reveal', role:'status'}, h('span', null, (F ? '⭐ ' : '') + 'Answer: ' + LIB.answerText(k, it)), sayBtn('The answer is ' + LIB.answerText(k, it) + '.', 'the answer')) : null;
+    var hintBox = c.fb ? h('div', {class:'fb info', role:'status'}, h('span', null, c.fb.text), sayBtn(c.fb.text, 'the hint')) : null;
+    var ctl = h('div', {class:'gctl'},
+      h('button', {type:'button', class:'btn', 'data-k':'gback', disabled:first ? true : null, onclick:gBack}, '◀ Back'),
+      !c.done ? h('button', {type:'button', class:'btn main', 'data-k':'greveal', onclick:gReveal}, (F ? '👁 ' : '') + 'Show answer') : null,
+      !c.done && CFG.hints ? h('button', {type:'button', class:'btn', 'data-k':'ghint', onclick:gHint}, (F ? '💡 ' : '') + 'Hint') : null,
+      h('button', {type:'button', class:'btn' + (c.done ? ' main' : ''), 'data-k':'gnext', disabled:last ? true : null, onclick:gNext}, 'Next ▶'),
+      h('span', {class:'spacer'}),
+      h('button', {type:'button', class:'btn', onclick:gNew}, (F ? '🔀 ' : '') + 'New times'),
+      h('button', {type:'button', class:'btn', onclick:gFull}, '⛶ Full screen'));
+    return h('div', {class:'rt-card'}, top,
+      h('h2', null, META[k].title, ' ', sayBtn(d, 'the directions')),
+      h('div', {class:'prog'}, h('div', {class:'dots', 'aria-hidden':'true'}, L.items.map(function(_, j){ return h('span', {class:'dot' + (j < L.i ? ' done' : j === L.i ? ' now' : '')}); })), h('span', null, 'Item ' + (L.i + 1) + ' of ' + L.items.length)),
+      k.charAt(0) === 'h' ? [TASKS[k](it, c), hintBox, reveal, talk] : gSplit(TASKS[k](it, c), h('div', null, hintBox, reveal, talk)), ctl,
+      h('p', {class:'keyhelp'}, 'Keys: → or Page Down = next · ← or Page Up = back · Space = show answer · H = hint · F = full screen'));
+  }
+  if (CFG.group){
+    document.addEventListener('keydown', function(e){
+      var tg = e.target && e.target.tagName; if (tg === 'INPUT' || tg === 'TEXTAREA' || e.ctrlKey || e.metaKey || e.altKey) return;
+      var key = e.key;
+      if (key === 'ArrowRight' || key === 'PageDown'){ e.preventDefault(); gNext(); }
+      else if (key === 'ArrowLeft' || key === 'PageUp'){ e.preventDefault(); gBack(); }
+      else if ((key === ' ' && !(tg === 'BUTTON')) || key === 'Enter' && tg !== 'BUTTON'){ e.preventDefault(); gReveal(); }
+      else if (key === 'h' || key === 'H'){ gHint(); }
+      else if (key === 'f' || key === 'F'){ gFull(); }
+    });
+    gStart();
+  } else { fresh(); render(); }
+})({"title":"Time at Work","directions":"Read the clock or the timecard. Then answer the question.","look":"friendly","read":"tap","rate":"0.85","size":"large","hints":true,"showMe":false,"showScore":true,"timer":false,"colors":true,"pass":80,"email":"","subject":"Time at Work results","c1count":6,"c1step":"15","c2count":6,"c2start":"mix","c2max":"15","c2digital":true,"c3count":5,"c3max":"30","c3tool":"pad","t1count":5,"t1half":false,"t2count":6,"t2half":false,"t2tool":"pad","t3count":3,"t3days":"5","t3show":true,"t3half":false,"t3tool":"pad","gdiscuss":true,"h1count":6,"h2count":6,"h3count":6,"hkind":"all","hplaces":"mix","hlate":"660","hyear":2026,"hplace":"the store","hopen":"540","hclose":"900","hearly":"720","hcustomDate":"","hnote":"Holiday","hday0":"open","hday1":"open","hday2":"open","hday3":"early","hday4":"closed","levels":{"c1":false,"c2":false,"c3":false,"t1":false,"t2":false,"t3":false,"h1":true,"h2":true,"h3":true},"embedded":false,"group":false},(function tawLib(){
+  function rng(seed){ var s = (seed >>> 0) || 1; return function(){ s = (s + 0x6D2B79F5) >>> 0; var t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function ri(r, a, b){ return a + Math.floor(r() * (b - a + 1)); }
+  function pick(r, a){ return a[Math.floor(r() * a.length)]; }
+  function shuffle(r, a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(r() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function hm(m){ m = ((m % 1440) + 1440) % 1440; return {h:Math.floor(m / 60), m:m % 60}; }
+  function face(m){ var t = hm(m), hh = t.h % 12 || 12; return hh + ':' + (t.m < 10 ? '0' : '') + t.m; }
+  function ampm(m){ return face(m) + ' ' + (hm(m).h < 12 ? 'AM' : 'PM'); }
+  function hrsText(x){ return String(Math.round(x * 100) / 100); }
+  var DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  var META = {
+    c1:{key:'L1', title:'Read the clock', dir:'Look at the clock. Tap the time it shows.', steps:1, paperDir:'Look at each clock. Write the time it shows.'},
+    c2:{key:'L2', title:'Early, on time, or late?', dir:'Look at when your shift starts. Look at the clock. Were you early, on time, or late?', steps:1, paperDir:'Look at the start time and the clock. Circle Early, On time, or Late.'},
+    c3:{key:'L3', title:'How early or late?', dir:'First tap Early or Late. Then find how many minutes.', steps:2, paperDir:'Circle Early or Late. Then write how many minutes.'},
+    t1:{key:'L4', title:'Read the timecard', dir:'Look at the timecard. Tap the time that answers the question.', steps:1, paperDir:'Use the timecard to answer each question.'},
+    t2:{key:'L5', title:'Hours for one day', dir:'Look at the In time and the Out time. How many hours did you work?', steps:1, paperDir:'Write how many hours were worked each day.'},
+    t3:{key:'L6', title:'Add up the week', dir:'Add the hours for every day. Type the total.', steps:1, paperDir:'Add the hours for every day. Write the total.'},
+    h1:{key:'L7', title:'Read the notice', dir:'Read the notice. Is it open all day, opening late, closing early, or closed?', steps:1, paperDir:'Read each notice. Circle the answer.'},
+    h2:{key:'L8', title:'What changed?', dir:'Read the notice. Find what is different this week.', steps:1, paperDir:'Read each notice. Circle the right answer.'},
+    h3:{key:'L9', title:'Plan for it', dir:'Read the problem. Use the notice. Pick the best plan.', steps:1, paperDir:'Read each problem. Use the notice. Circle the best plan.'}
+  };
+  function dirOf(k, cfg, paper){
+    if (k === 't3' && !cfg.t3show) return paper ? 'Write the hours for each day. Then add them and write the total.' : 'Find the hours for each day. Then add them. Type the total.';
+    return paper ? META[k].paperDir : META[k].dir;
+  }
+  function clockSVG(m, opt){
+    opt = opt || {};
+    var t = hm(m), hh = t.h % 12, mm = t.m, ha = (hh + mm / 60) * 30, ma = mm * 6;
+    var hc = opt.colors ? '#5b3491' : '#1f1830', mc = opt.colors ? '#e8731c' : '#1f1830';
+    function pt(a, len){ var rad = a * Math.PI / 180; return [(100 + len * Math.sin(rad)).toFixed(2), (100 - len * Math.cos(rad)).toFixed(2)]; }
+    var s = '<svg class="clock" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A clock with a short hour hand and a long minute hand">';
+    s += '<circle cx="100" cy="100" r="95" fill="#fff" stroke="#1f1830" stroke-width="5"/>';
+    for (var i = 0; i < 60; i++){ var big = i % 5 === 0, p1 = pt(i * 6, big ? 80 : 85), p2 = pt(i * 6, 91); s += '<line x1="' + p1[0] + '" y1="' + p1[1] + '" x2="' + p2[0] + '" y2="' + p2[1] + '" stroke="#1f1830" stroke-width="' + (big ? 3.5 : 1.4) + '" stroke-linecap="round"/>'; }
+    for (var n = 1; n <= 12; n++){ var p = pt(n * 30, 62); s += '<text x="' + p[0] + '" y="' + (Number(p[1]) + 7.5).toFixed(2) + '" text-anchor="middle" font-family="Verdana, sans-serif" font-size="21" font-weight="700" fill="#1f1830">' + n + '</text>'; }
+    var e1 = pt(ma, 76), e2 = pt(ha, 46);
+    s += '<line x1="100" y1="100" x2="' + e1[0] + '" y2="' + e1[1] + '" stroke="' + mc + '" stroke-width="5" stroke-linecap="round"/>';
+    s += '<line x1="100" y1="100" x2="' + e2[0] + '" y2="' + e2[1] + '" stroke="' + hc + '" stroke-width="10" stroke-linecap="round"/>';
+    s += '<circle cx="100" cy="100" r="7" fill="#1f1830"/></svg>';
+    return s;
+  }
+  function dayRows(r, nd, half){
+    var starts = half ? [420, 450, 480, 510, 540, 570, 600, 690, 720, 750, 780] : [420, 480, 540, 600, 660, 720, 780];
+    var rows = [];
+    for (var i = 0; i < nd; i++){
+      var inM = pick(r, starts), len = ri(r, 3, 8);
+      if (half && r() < 0.5) len += 0.5;
+      if (inM + len * 60 > 1260) len = Math.floor((1260 - inM) / 60);
+      rows.push({day:DAYS[i], inM:inM, outM:inM + len * 60, hrs:len});
+    }
+    return rows;
+  }
+  function gen(k, r, cfg, cap){
+    var n = Math.max(1, Number(cfg[k + 'count']) || 5); if (cap) n = Math.min(n, cap);
+    var out = [], seen = {}, guard = 0, i, j;
+    if (k === 'c1'){
+      var step = Number(cfg.c1step) || 15;
+      while (out.length < n && guard++ < 500){
+        var H = ri(r, 1, 12), M = step >= 60 ? 0 : ri(r, 0, 60 / step - 1) * step, m = H * 60 + M;
+        if (seen[m] && guard < 200) continue; seen[m] = 1;
+        var cands = [];
+        if (M % 5 === 0){ var sh = M === 0 ? 12 : M / 5, sm = (H % 12) * 5; cands.push({m:sh * 60 + sm, type:'swap'}); }
+        cands.push({m:(M >= 30 ? (H % 12) + 1 : (H === 1 ? 12 : H - 1)) * 60 + M, type:'hour'});
+        var dm = step >= 15 ? 15 : 5;
+        cands.push({m:H * 60 + ((M + (r() < 0.5 ? dm : 60 - dm)) % 60), type:'min'});
+        cands.push({m:H * 60 + ((M + 30) % 60), type:'min'});
+        var used = {}; used[face(m)] = 1; var ch = [{m:m, type:'ok'}];
+        for (j = 0; j < cands.length && ch.length < 3; j++){ var f = face(cands[j].m); if (!used[f]){ used[f] = 1; ch.push(cands[j]); } }
+        while (ch.length < 3){ var x = ri(r, 1, 12) * 60 + ri(r, 0, 11) * 5; if (!used[face(x)]){ used[face(x)] = 1; ch.push({m:x, type:'min'}); } }
+        out.push({m:m, H:H, M:M, choices:shuffle(r, ch)});
+      }
+    } else if (k === 'c2' || k === 'c3'){
+      var starts = [420, 450, 480, 510, 540, 600, 720, 780, 900];
+      var max = Math.max(5, Number(cfg[k === 'c2' ? 'c2max' : 'c3max']) || 15);
+      var base = k === 'c2' ? ['early', 'ontime', 'late'] : ['early', 'late'], kinds = [];
+      while (kinds.length < n) kinds = kinds.concat(shuffle(r, base));
+      kinds = shuffle(r, kinds.slice(0, n));
+      for (i = 0; i < n; i++){
+        var st = cfg.c2start && cfg.c2start !== 'mix' ? Number(cfg.c2start) : pick(r, starts);
+        var off = kinds[i] === 'ontime' ? 0 : ri(r, 1, Math.floor(max / 5)) * 5;
+        out.push({start:st, arrive:st + (kinds[i] === 'early' ? -off : off), kind:kinds[i], mins:off});
+      }
+    } else if (k === 't1'){
+      var card = dayRows(r, 5, cfg.t1half), pairs = [];
+      for (var d = 0; d < 5; d++){ pairs.push([d, 'in']); pairs.push([d, 'out']); }
+      shuffle(r, pairs).slice(0, Math.min(n, 10)).forEach(function(p){
+        var row = card[p[0]], okm = p[1] === 'in' ? row.inM : row.outM, other = p[1] === 'in' ? row.outM : row.inM;
+        var ch = [{m:okm, type:'ok'}, {m:other, type:'col'}], used = {}; used[okm] = 1; used[other] = 1;
+        var opts = shuffle(r, card.filter(function(x, jj){ return jj !== p[0]; }).map(function(x){ return p[1] === 'in' ? x.inM : x.outM; }));
+        for (var q = 0; q < opts.length && ch.length < 3; q++) if (!used[opts[q]]){ used[opts[q]] = 1; ch.push({m:opts[q], type:'day'}); }
+        var tries = 0; while (ch.length < 3 && tries++ < 50){ var x = okm + (r() < 0.5 ? -60 : 60) * ri(r, 1, 3); if (!used[x]){ used[x] = 1; ch.push({m:x, type:'day'}); } }
+        out.push({card:card, day:p[0], which:p[1], choices:shuffle(r, ch)});
+      });
+    } else if (k === 't2'){
+      var starts2 = [420, 480, 540, 600, 660, 720, 780];
+      while (out.length < n && guard++ < 300){
+        var inM = pick(r, starts2), len = ri(r, 2, 8);
+        if (cfg.t2half && r() < 0.5) len += 0.5;
+        var key = inM + '-' + len; if (seen[key] && guard < 150) continue; seen[key] = 1;
+        out.push({inM:inM, outM:inM + len * 60, hrs:len});
+      }
+    } else if (k.charAt(0) === 'h'){
+      return hGen(k, r, cfg, n);
+    } else if (k === 't3'){
+      var nd = Math.min(5, Math.max(2, Number(cfg.t3days) || 5));
+      for (i = 0; i < n; i++){ var rows = dayRows(r, nd, cfg.t3half); out.push({rows:rows, total:rows.reduce(function(s, x){ return s + x.hrs; }, 0)}); }
+    }
+    return out;
+  }
+  /* ---- Schedule changes (holidays, Michigan weather, and other changes; workplaces and community places) ---- */
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function nthWeekday(y, mo, wd, n){ var d = new Date(y, mo, 1), off = (wd - d.getDay() + 7) % 7; return new Date(y, mo, 1 + off + (n - 1) * 7); }
+  function lastMonday(y, mo){ var d = new Date(y, mo + 1, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d; }
+  function mondayOf(d){ var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
+  function observed(d){ var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); if (x.getDay() === 6) x.setDate(x.getDate() - 1); else if (x.getDay() === 0) x.setDate(x.getDate() + 1); return x; }
+  function sameDay(a, b){ return !!a && !!b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
+  function addDays(d, n){ var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() + n); return x; }
+  function cap(t){ t = String(t || ''); return t.charAt(0).toUpperCase() + t.slice(1); }
+  var HOLS = ['newyear', 'memorial', 'july4', 'labor', 'thanksgiving', 'christmas'];
+  var WEATHER = ['snow', 'snow', 'ice', 'cold'];
+  var OTHER = ['power', 'training', 'repairs', 'inventory'];
+  var REASONS = ["New Year's Day", 'Memorial Day', 'Independence Day', 'Labor Day', 'Thanksgiving', 'Christmas', 'Snow day', 'Ice storm', 'Dangerous cold', 'Power outage', 'Staff training', 'Repairs', 'Inventory'];
+  function holDate(kind, y){
+    if (kind === 'christmas') return {hol:observed(new Date(y, 11, 25)), name:'Christmas', eve:new Date(y, 11, 24), eveName:'Christmas Eve'};
+    if (kind === 'newyear') return {hol:observed(new Date(y + 1, 0, 1)), name:"New Year's Day", eve:new Date(y, 11, 31), eveName:"New Year's Eve"};
+    if (kind === 'memorial') return {hol:lastMonday(y, 4), name:'Memorial Day'};
+    if (kind === 'july4') return {hol:observed(new Date(y, 6, 4)), name:'Independence Day'};
+    if (kind === 'labor') return {hol:nthWeekday(y, 8, 1, 1), name:'Labor Day'};
+    var t = nthWeekday(y, 10, 4, 4);
+    return {hol:t, name:'Thanksgiving', after:addDays(t, 1), afterName:'Day after Thanksgiving', eve:addDays(t, -1), eveName:'Day before Thanksgiving'};
+  }
+  var PLACES = {
+    job:{n:'your workplace', t:'Your workplace', job:true, hrs:[[480, 960], [540, 1020], [420, 900], [540, 900]], eve:0.7, evm:0, after:0.5},
+    store:{n:'the grocery store', t:'Grocery store', retail:true, hrs:[[420, 1320], [480, 1260]], eve:0.9, evm:1080, after:0, short:{thanksgiving:0.5, newyear:0.6, memorial:0.7, july4:0.7, labor:0.7}, shortClose:900},
+    bank:{n:'the bank', t:'Bank', hrs:[[540, 1020]], eve:0.5, evm:720, after:0},
+    library:{n:'the library', t:'Library', hrs:[[600, 1080], [540, 1200]], eve:0.7, evm:840, after:0.5},
+    post:{n:'the post office', t:'Post office', hrs:[[540, 1020], [510, 1050]], eve:0.3, evm:720, after:0},
+    pharmacy:{n:'the pharmacy', t:'Pharmacy', retail:true, hrs:[[480, 1260], [540, 1140]], eve:0.8, evm:1020, after:0, short:{thanksgiving:0.3, july4:0.5, memorial:0.5, labor:0.5}, shortClose:960}
+  };
+  var COMMUNITY = ['store', 'bank', 'library', 'post', 'pharmacy'];
+  function catOf(kind){ return HOLS.indexOf(kind) >= 0 ? 'holiday' : WEATHER.indexOf(kind) >= 0 ? 'weather' : kind === 'custom' ? 'custom' : 'other'; }
+  function hourRound(m){ return Math.round(m / 60) * 60; }
+  function holidayWeek(cfg, kind, place, r){
+    r = r || Math.random;
+    if (!kind){ var hk = cfg.hkind; kind = HOLS.indexOf(hk) >= 0 || hk === 'custom' ? hk : 'snow'; }
+    if (kind === 'custom') place = 'one';
+    place = place || 'job';
+    var y = Number(cfg.hyear) || new Date().getFullYear(), cat = catOf(kind);
+    var st = ['open', 'open', 'open', 'open', 'open'], notes = ['', '', '', '', ''], opens = [0, 0, 0, 0, 0], closes = [0, 0, 0, 0, 0], mon, name, pl, open, close, early, late, shortClose = 0;
+    if (place === 'one'){
+      var nm = String(cfg.hplace || '').trim() || 'the store';
+      pl = {n:nm, t:cap(nm), job:false, eve:0.7, after:0.5};
+      open = Number(cfg.hopen) || 540; close = Number(cfg.hclose) || 1020; early = Number(cfg.hearly) || 720; late = Number(cfg.hlate) || 660;
+    } else {
+      pl = PLACES[place] || PLACES.job;
+      var hh = pick(r, pl.hrs); open = hh[0]; close = hh[1]; early = pl.evm || open + 240; late = open + 120; shortClose = pl.shortClose || 0;
+    }
+    if (early <= open || early >= close) early = Math.max(open + 120, Math.min(close - 60, open + 240));
+    if (late <= open || late >= close - 60) late = Math.min(open + 120, close - 120);
+    function set(i, status, note, o, c){ st[i] = status; notes[i] = note; opens[i] = o || 0; closes[i] = c || 0; }
+    function randWeek(months){ var mo = pick(r, months), yy = mo >= 12 ? y + 1 : y; return addDays(nthWeekday(yy, mo % 12, 1, 1), 7 * ri(r, 0, 2)); }
+    var i;
+    if (kind === 'custom'){
+      var p = String(cfg.hcustomDate || '').split('-');
+      mon = p.length === 3 && +p[0] ? mondayOf(new Date(+p[0], +p[1] - 1, +p[2])) : mondayOf(nthWeekday(y, 10, 4, 4));
+      name = String(cfg.hnote || '').trim() || 'Schedule change';
+      for (i = 0; i < 5; i++){ var s0 = cfg['hday' + i] || 'open'; set(i, s0, s0 === 'open' ? '' : name, s0 === 'late' ? late : 0, s0 === 'early' ? early : 0); }
+    } else if (cat === 'holiday'){
+      var H = holDate(kind, y); name = H.name; mon = mondayOf(H.hol);
+      for (var j = 0; j < 5; j++){
+        var d = addDays(mon, j);
+        if (sameDay(d, H.hol)){ if (pl.short && r() < (pl.short[kind] || 0)) set(j, 'early', H.name + ' (short hours)', 0, shortClose); else set(j, 'closed', H.name); }
+        else if (H.after && sameDay(d, H.after) && r() < (pl.after || 0)) set(j, 'closed', H.afterName);
+        else if (H.eve && sameDay(d, H.eve) && r() < (pl.eve || 0)) set(j, 'early', H.eveName, 0, early);
+      }
+    } else if (cat === 'weather'){
+      mon = randWeek([11, 12, 13, 14]);
+      if (kind === 'ice'){
+        name = 'Ice storm'; i = ri(r, 0, 3);
+        set(i, 'early', 'Ice storm coming', 0, Math.max(open + 180, hourRound(open + (close - open) / 2)));
+        if (pl.retail) set(i + 1, 'late', 'Ice storm', open + 180); else set(i + 1, 'closed', 'Ice storm');
+      } else if (kind === 'cold'){
+        name = 'Dangerous cold'; i = ri(r, 0, 4);
+        if (pl.retail || r() < 0.5) set(i, 'late', 'Dangerous cold', open + 120); else set(i, 'closed', 'Dangerous cold');
+      } else {
+        name = 'Snow storm'; i = ri(r, 0, 4);
+        if (pl.retail) set(i, 'late', 'Snow delay', open + 120);
+        else { set(i, 'closed', 'Snow day'); if (i < 4 && r() < 0.6) set(i + 1, 'late', 'Snow delay', open + 120); }
+      }
+    } else {
+      mon = randWeek([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]); i = ri(r, 0, 4);
+      if (kind === 'inventory' && !pl.retail) kind = 'training';
+      if (kind === 'training' && pl.retail) kind = 'inventory';
+      if (kind === 'power'){ name = 'Power outage'; set(i, 'closed', 'Power outage'); }
+      else if (kind === 'training'){ name = 'Staff training'; if (r() < 0.5) set(i, 'closed', 'Staff training'); else set(i, 'late', 'Staff training', open + 180); }
+      else if (kind === 'inventory'){ name = 'Inventory'; set(i, 'early', 'Inventory', 0, close - 240); }
+      else { name = 'Repairs'; if (r() < 0.5) set(i, 'closed', 'Repairs'); else set(i, 'early', 'Repairs', 0, Math.max(open + 180, close - 240)); }
+    }
+    var days = [];
+    for (var k = 0; k < 5; k++){
+      var dd = addDays(mon, k);
+      days.push({i:k, day:DAYS[k], date:MONTHS[dd.getMonth()] + ' ' + dd.getDate(), status:st[k], note:notes[k], open:st[k] === 'late' ? (opens[k] || late) : open, close:st[k] === 'early' ? (closes[k] || early) : close});
+    }
+    var sign = cat === 'holiday' ? 'Holiday Hours' : cat === 'weather' ? 'Weather Update' : 'Schedule Change';
+    var sub = cat === 'holiday' ? name + ' week' : name + ' · week of ' + days[0].date;
+    return {kind:kind, cat:cat, planned:cat !== 'weather', name:name, sign:sign, sub:sub, days:days, open:open, close:close, early:early, late:late, place:pl.n, title:pl.t, job:!!pl.job};
+  }
+  function reasonOf(n){ return String(n || '').replace(/ \(short hours\)$/, ''); }
+  function noteFor(n){ n = reasonOf(n); if (/^Day /.test(n)) return 'the ' + n.charAt(0).toLowerCase() + n.slice(1); if (/^(Snow|Ice|Dangerous|Power|Staff|Repairs|Inventory)/.test(n)) return n.toLowerCase(); return n; }
+  var STATUS_WORDS = {open:'Open all day', late:'Opens late', early:'Closes early', closed:'Closed'};
+  var STATUS_ICON = {open:'✓ ', late:'⏳ ', early:'⏰ ', closed:'✕ '};
+  function hStatus(d){ return STATUS_WORDS[d.status]; }
+  function hSpeak(d, P){
+    P = cap(P);
+    var t = d.status === 'closed' ? P + ' is closed' + (d.note ? ' for ' + noteFor(d.note) : '') :
+      d.status === 'early' ? P + ' closes early. Open ' + ampm(d.open) + ' to ' + ampm(d.close) + (d.note ? '. ' + reasonOf(d.note) : '') :
+      d.status === 'late' ? P + ' opens late. Open ' + ampm(d.open) + ' to ' + ampm(d.close) + (d.note ? '. ' + reasonOf(d.note) : '') :
+      P + ' is open ' + ampm(d.open) + ' to ' + ampm(d.close);
+    return d.day + ', ' + d.date + '. ' + t + '.';
+  }
+  function listWords(a){ return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + (a.length > 2 ? ',' : '') + ' and ' + a[a.length - 1]; }
+  function hChoices(r, okText, wrong){ return shuffle(r, [{t:okText, type:'ok'}].concat(wrong.map(function(w){ return {t:w[0], type:'x', fb:w[1]}; }))); }
+  function hPrevOpen(D, c){ for (var x = c.i - 1; x >= 0; x--) if (D[x].status !== 'closed') return D[x]; return null; }
+  function hNextOpen(D, c){ for (var x = c.i + 1; x < 5; x++) if (D[x].status !== 'closed') return D[x]; return null; }
+  function kindPoolFor(cfg){
+    var k = cfg.hkind;
+    if (k === 'custom') return [['custom']];
+    if (HOLS.indexOf(k) >= 0) return [[k]];
+    if (k === 'holidays') return [HOLS];
+    if (k === 'weather') return [WEATHER];
+    if (k === 'other') return [OTHER];
+    return [HOLS, WEATHER, OTHER];
+  }
+  function hGen(k, r, cfg, n){
+    var out = [], kinds = [], places = [], i, used = {};
+    var groups = shuffle(r, kindPoolFor(cfg));
+    var placePool = cfg.hkind === 'custom' || cfg.hplaces === 'one' ? ['one'] : cfg.hplaces === 'job' ? ['job'] : cfg.hplaces === 'community' ? COMMUNITY : ['job', 'job'].concat(COMMUNITY);
+    var pp = shuffle(r, placePool), lastKind = '';
+    for (i = 0; i < n; i++){
+      var g = groups[i % groups.length], kk = pick(r, g);
+      if (g.length > 1 && kk === lastKind) kk = pick(r, g);
+      kinds.push(kk); lastKind = kk;
+      places.push(pp[i % pp.length]); if (i % pp.length === pp.length - 1) pp = shuffle(r, placePool);
+    }
+    var types = k === 'h1' ? ['open', 'late', 'early', 'closed'] : k === 'h2' ? ['close', 'opentime', 'which', 'count', 'why'] : ['ride', 'closedday', 'appt', 'mycount', 'delay', 'unsafe', 'errand', 'latevisit', 'lastday', 'howknow'];
+    var queue = [];
+    for (i = 0; i < n; i++){
+      var wk = holidayWeek(cfg, kinds[i], places[i], r), D = wk.days;
+      var by = {open:[], late:[], early:[], closed:[]};
+      D.forEach(function(d){ by[d.status].push(d); });
+      var noted = by.closed.filter(function(c){ return c.note; });
+      var ok = types.filter(function(t){
+        if (by[t] && k === 'h1') return by[t].length;
+        if (t === 'close') return by.open.length || by.early.length;
+        if (t === 'opentime') return by.late.length;
+        if (t === 'which') return by.early.length || by.late.length;
+        if (t === 'why') return D.some(function(d){ return d.note; });
+        if (t === 'ride') return wk.job && by.early.length;
+        if (t === 'closedday') return wk.job && noted.length;
+        if (t === 'appt') return wk.job && by.open.length;
+        if (t === 'mycount') return wk.job;
+        if (t === 'delay') return by.late.length;
+        if (t === 'unsafe') return wk.job && wk.cat === 'weather';
+        if (t === 'errand') return !wk.job && noted.some(function(c){ return wk.planned ? hPrevOpen(D, c) : hNextOpen(D, c); });
+        if (t === 'latevisit') return !wk.job && by.early.length;
+        if (t === 'lastday') return !wk.job && wk.planned && noted.some(function(c){ return hPrevOpen(D, c); });
+        if (t === 'howknow') return !used['howknow' + wk.cat];
+        return k !== 'h1';
+      });
+      if (!ok.length) ok = k === 'h1' ? ['open'] : k === 'h2' ? ['count'] : ['howknow'];
+      if (!queue.some(function(t){ return ok.indexOf(t) >= 0; })) queue = shuffle(r, types.slice());
+      var ty = null;
+      for (var q = 0; q < queue.length; q++) if (ok.indexOf(queue[q]) >= 0){ ty = queue.splice(q, 1)[0]; break; }
+      if (!ty) ty = pick(r, ok);
+      if (ty === 'howknow') used['howknow' + wk.cat] = 1;
+      out.push(hItem(k, ty, r, wk, by, wk.place, used));
+    }
+    return out;
+  }
+  function hItem(k, ty, r, wk, by, P, used){
+    var it = {wk:wk, hl:null, my:[], ty:ty}, d, D = wk.days, CP = cap(P);
+    function fresh1(list){ var f = list.filter(function(x){ return !used[wk.kind + wk.place + ty + x.i]; }); var c = pick(r, f.length ? f : list); used[wk.kind + wk.place + ty + c.i] = 1; return c; }
+    function find(dd){ return 'Find ' + dd.day + ' on the notice. Read the words in that box.'; }
+    var why = function(dd){ return dd.note ? ' (' + reasonOf(dd.note) + ')' : ''; };
+    if (k === 'h1'){
+      d = fresh1(by[ty]); it.hl = d.i;
+      it.q = 'Is ' + P + ' open on ' + d.day + ', ' + d.date + '?';
+      var right = hStatus(d), others = shuffle(r, ['open', 'late', 'early', 'closed'].filter(function(s){ return s !== d.status; })).slice(0, 2);
+      it.choices = ['open', 'late', 'early', 'closed'].filter(function(s){ return s === d.status || others.indexOf(s) >= 0; }).map(function(s){ return s === d.status ? {t:STATUS_WORDS[s], type:'ok'} : {t:STATUS_WORDS[s], type:'x', fb:find(d)}; });
+      it.fb2 = 'The ' + d.day + ' box says ' + right + why(d) + '.';
+      it.hint = [find(d), 'Look at the ' + d.day + ' box. It says ' + right + '.'];
+      it.label = d.day + ' ' + d.date;
+    } else if (k === 'h2'){
+      if (ty === 'close'){
+        d = fresh1(by.early.length && r() < 0.5 ? by.early : by.open.length ? by.open : by.early); it.hl = d.i;
+        it.q = 'What time does ' + P + ' close on ' + d.day + '?';
+        var other = d.status === 'early' ? wk.close : wk.early;
+        it.choices = hChoices(r, ampm(d.close), [[ampm(other), d.status === 'early' ? 'That is the normal closing time. ' + d.day + ' is different this week.' : 'That is not the time for ' + d.day + '. Read the ' + d.day + ' box again.'], ['It is closed that day', CP + ' is open on ' + d.day + '. Look for the closing time in that box.']]);
+        it.hint = [find(d), 'The ' + d.day + ' box says ' + ampm(d.open) + ' to ' + ampm(d.close) + '. The second time is when it closes.'];
+        it.label = 'Close time ' + d.day;
+      } else if (ty === 'opentime'){
+        d = fresh1(by.late); it.hl = d.i;
+        it.q = 'What time does ' + P + ' open on ' + d.day + '?';
+        it.choices = hChoices(r, ampm(d.open), [[ampm(wk.open), 'That is the normal opening time. ' + d.day + ' opens late this week' + why(d) + '.'], ['It is closed that day', CP + ' is open on ' + d.day + ', just later. Look for the first time in that box.']]);
+        it.hint = [find(d), 'The ' + d.day + ' box says ' + ampm(d.open) + ' to ' + ampm(d.close) + '. The first time is when it opens.'];
+        it.label = 'Open time ' + d.day;
+      } else if (ty === 'which'){
+        var sKind = by.early.length && (!by.late.length || r() < 0.5) ? 'early' : 'late';
+        d = pick(r, by[sKind]); it.hl = d.i;
+        it.q = sKind === 'early' ? 'Which day does ' + P + ' close early?' : 'Which day does ' + P + ' open late?';
+        var wr = [];
+        if (by.closed.length) wr.push([by.closed[0].day, CP + ' is closed all day on ' + by.closed[0].day + '. ' + (sKind === 'early' ? 'Closing early means it opens, then closes sooner.' : 'Opening late means it still opens, just later.')]);
+        var otherKind = sKind === 'early' ? 'late' : 'early';
+        if (by[otherKind].length && wr.length < 2) wr.push([by[otherKind][0].day, 'That day ' + (otherKind === 'early' ? 'closes early' : 'opens late') + '. Look for the box that says ' + STATUS_WORDS[sKind] + '.']);
+        shuffle(r, by.open).forEach(function(o){ if (wr.length < 2) wr.push([o.day, o.day + ' has normal hours. Look for the box that says ' + STATUS_WORDS[sKind] + '.']); });
+        it.choices = hChoices(r, d.day, wr);
+        it.hint = ['Look for a box that says ' + STATUS_WORDS[sKind] + '.', 'The ' + d.day + ' box says ' + STATUS_WORDS[sKind] + '.'];
+        it.label = 'Which day ' + STATUS_WORDS[sKind].toLowerCase();
+      } else if (ty === 'count'){
+        var cnt = 5 - by.closed.length, normal = by.open.length;
+        it.q = 'How many days is ' + P + ' open this week? Count days with changed hours too.';
+        var w2 = [];
+        if (cnt !== 5) w2.push(['5', 'Some days are closed. Do not count those.']);
+        if (normal !== cnt) w2.push([String(normal), 'Days that open late or close early still count. It is open for part of the day.']);
+        [cnt - 1, cnt + 1, cnt - 2].forEach(function(v){ if (w2.length < 2 && v >= 0 && v <= 5 && v !== cnt && !w2.some(function(x){ return x[0] === String(v); })) w2.push([String(v), 'Count again. Touch each box that is not Closed.']); });
+        it.choices = hChoices(r, String(cnt), w2);
+        it.hint = ['Count the boxes that are not Closed.', 'Closed days: ' + (by.closed.map(function(x){ return x.day; }).join(', ') || 'none') + '. 5 days minus ' + by.closed.length + ' closed.'];
+        it.label = 'Days open this week';
+      } else {
+        d = fresh1(D.filter(function(x){ return x.note; })); it.hl = d.i;
+        var real = reasonOf(d.note);
+        it.q = d.status === 'closed' ? 'Why is ' + P + ' closed on ' + d.day + '?' : 'Why are the hours different on ' + d.day + '?';
+        var rw = real.toLowerCase().split(' ')[0];
+        var names = REASONS.filter(function(x){ var xl = x.toLowerCase(); return xl.split(' ')[0] !== rw && real.toLowerCase().indexOf(xl) < 0 && xl.indexOf(real.toLowerCase()) < 0; });
+        it.choices = hChoices(r, real, shuffle(r, names).slice(0, 2).map(function(x){ return [x, 'Look at the small words in the ' + d.day + ' box. They tell you why.']; }));
+        it.hint = [find(d), 'The ' + d.day + ' box says ' + real + '.'];
+        it.label = 'Why ' + d.day;
+      }
+    } else if (ty === 'ride'){
+      d = pick(r, by.early); it.hl = d.i;
+      it.q = 'Your ride picks you up from work at ' + ampm(wk.close) + '. On ' + d.day + ', your workplace closes at ' + ampm(d.close) + '. What should you do?';
+      it.choices = hChoices(r, 'Ask my ride to come at ' + ampm(d.close) + ' on ' + d.day, [
+        ['Wait outside until ' + ampm(wk.close) + ' like normal', 'Work ends at ' + ampm(d.close) + ' that day. You would wait a long time' + (wk.cat === 'weather' ? ' in bad weather' : '') + '. Plan a new pick-up time.'],
+        ['Stay home on ' + d.day, 'You still work that morning. You just need a new pick-up time.']]);
+      it.hint = ['When does work end on ' + d.day + '? When does your ride come?', 'Work ends at ' + ampm(d.close) + '. Your ride needs to come then.'];
+      it.label = 'Ride on ' + d.day;
+    } else if (ty === 'closedday'){
+      d = fresh1(by.closed.filter(function(x){ return x.note; })); it.hl = d.i; it.my = [d.i];
+      it.q = 'You work every ' + d.day + '. This ' + d.day + ', ' + d.date + ', your workplace is closed for ' + noteFor(d.note) + '. What should you do?';
+      it.choices = hChoices(r, 'Stay home. Work is closed that day', [
+        ['Go to work like normal', 'Work is closed. No one will be there to let you in.'],
+        ['Call in sick', 'You do not need to call in. Work is closed for everyone that day.']]);
+      it.hint = ['Look at the ' + d.day + ' box. Is work open?', 'Work is closed on ' + d.day + ' for everyone. You can stay home.'];
+      it.label = 'Closed on my work day ' + d.day;
+    } else if (ty === 'appt'){
+      d = fresh1(by.open); it.hl = d.i; it.my = [d.i];
+      it.q = 'You have a doctor appointment on ' + d.day + '. You are scheduled to work that day. What should you do?';
+      it.choices = hChoices(r, 'Tell my boss before ' + d.day, [
+        ['Stay home and say nothing', 'Your boss will wonder where you are. Always tell your boss ahead of time.'],
+        ['Tell my boss the day after', 'Tell your boss before the day, so they can plan.']]);
+      it.hint = ['Is work open on ' + d.day + '? Then your boss expects you.', 'When you will miss a work day, tell your boss before that day.'];
+      it.label = 'Appointment ' + d.day;
+    } else if (ty === 'mycount'){
+      var idx = shuffle(r, [0, 1, 2, 3, 4]), my = [];
+      if (by.closed.length) my.push(pick(r, by.closed).i);
+      idx.forEach(function(x){ if (my.length < 3 && my.indexOf(x) < 0) my.push(x); });
+      my.sort(); it.my = my;
+      var can = my.filter(function(x){ return D[x].status !== 'closed'; }).length;
+      it.q = 'Your work days are ' + listWords(my.map(function(x){ return D[x].day; })) + '. How many of those days will you work this week?';
+      var w3 = [];
+      if (can !== 3) w3.push(['3', 'Check each of your days. Is work open on all of them?']);
+      [can - 1, can + 1, can - 2].forEach(function(v){ if (w3.length < 2 && v >= 0 && v <= 3 && v !== can && !w3.some(function(x){ return x[0] === String(v); })) w3.push([String(v), 'Count only your days when work is open. Days that open late or close early still count.']); });
+      it.choices = hChoices(r, String(can), w3);
+      it.hint = ['Find your days. They say ★ Your day.', 'Your days: ' + my.map(function(x){ return D[x].day + ' is ' + hStatus(D[x]).toLowerCase(); }).join('. ') + '.'];
+      it.label = 'My work days this week';
+    } else if (ty === 'delay'){
+      d = fresh1(by.late); it.hl = d.i;
+      var reason = noteFor(d.note);
+      if (wk.job){
+        it.q = 'Because of ' + reason + ', your workplace opens late on ' + d.day + '. What time should you get to work?';
+        it.choices = hChoices(r, ampm(d.open), [[ampm(wk.open), 'That is the normal time. Work opens late that day. You would wait outside' + (wk.cat === 'weather' ? ' in the cold' : '') + '.'], ['Stay home all day', 'Work is still open that day, just later. You need to go in at the new time.']]);
+      } else {
+        it.q = 'Because of ' + reason + ', ' + P + ' opens late on ' + d.day + '. When can you go there that day?';
+        it.choices = hChoices(r, 'At ' + ampm(d.open) + ' or later', [['At ' + ampm(wk.open) + ' like normal', 'It opens late that day. The doors will be locked at ' + ampm(wk.open) + '.'], ['Not at all that day', 'It is still open that day, just later. Look at the opening time.']]);
+      }
+      it.hint = ['Look at the ' + d.day + ' box. Find the first time.', 'On ' + d.day + ' it opens at ' + ampm(d.open) + ' instead of ' + ampm(wk.open) + '.'];
+      it.label = 'Late opening ' + d.day;
+    } else if (ty === 'unsafe'){
+      d = fresh1(by.open.length ? by.open : D.filter(function(x){ return x.status !== 'closed'; })); it.hl = d.i;
+      it.q = 'It is ' + d.day + '. Work is open, but the roads near you are covered in snow and ice. Your ride cannot come. What should you do?';
+      it.choices = hChoices(r, 'Call my boss before my shift and explain', [
+        ['Stay home and say nothing', 'Your boss needs to know. Call before your shift starts.'],
+        ['Walk or drive fast on the ice to be on time', 'Your safety comes first. Call your boss instead.']]);
+      it.hint = ['Work is open, so your boss expects you. What do you do when you cannot get there?', 'Call your boss before your shift. Tell them why you cannot come.'];
+      it.label = 'Cannot get to work safely';
+    } else if (ty === 'errand'){
+      var cs = by.closed.filter(function(c){ return c.note && (wk.planned ? hPrevOpen(D, c) : hNextOpen(D, c)); }), c = pick(r, cs);
+      var alt = wk.planned ? hPrevOpen(D, c) : hNextOpen(D, c); it.hl = c.i;
+      it.q = 'You need to go to ' + P + ' on ' + c.day + '. It is closed that day for ' + noteFor(c.note) + '. What should you do?';
+      var okT = alt.status === 'late' ? 'Go on ' + alt.day + ' after ' + ampm(alt.open) : 'Go on ' + alt.day + ' before ' + ampm(alt.close);
+      var wE = [['Go on ' + c.day + ' anyway', CP + ' is closed on ' + c.day + '. The doors will be locked.']];
+      if (alt.status === 'early') wE.push(['Go on ' + alt.day + ' at ' + ampm(Math.min(wk.close - 30, alt.close + 120)), CP + ' closes early on ' + alt.day + ', at ' + ampm(alt.close) + '. You would get there too late.']);
+      else if (alt.status === 'late') wE.push(['Go on ' + alt.day + ' at ' + ampm(wk.open), CP + ' opens late on ' + alt.day + ', at ' + ampm(alt.open) + '. You would get there too early.']);
+      else wE.push(['Go on ' + c.day + ' night', 'Closed means closed all day. Go on ' + alt.day + ' instead.']);
+      it.choices = hChoices(r, okT, wE);
+      it.hint = ['It is closed on ' + c.day + '. Look at the day ' + (wk.planned ? 'before' : 'after') + '.', CP + ' is open on ' + alt.day + ' from ' + ampm(alt.open) + ' to ' + ampm(alt.close) + '.'];
+      it.label = 'Errand, closed ' + c.day;
+    } else if (ty === 'latevisit'){
+      d = pick(r, by.early); it.hl = d.i;
+      var t = Math.min(d.close + 120, wk.close - 30); if (t <= d.close) t = d.close + 30;
+      it.q = 'You want to go to ' + P + ' on ' + d.day + ' at ' + ampm(t) + '. What should you do?';
+      it.choices = hChoices(r, 'Go before ' + ampm(d.close) + ', or go another day', [
+        ['Go at ' + ampm(t) + ' like normal', CP + ' closes early on ' + d.day + ', at ' + ampm(d.close) + '. It will be closed when you get there.'],
+        ['Ask them to stay open late for me', 'Places do not change their hours for one person. Plan around the posted hours.']]);
+      it.hint = ['What time does it close on ' + d.day + '?', 'On ' + d.day + ' it closes at ' + ampm(d.close) + '. ' + ampm(t) + ' is after that.'];
+      it.label = 'Errand at ' + ampm(t) + ' ' + d.day;
+    } else if (ty === 'lastday'){
+      var c2 = by.closed.filter(function(c){ return c.note && hPrevOpen(D, c); })[0], pv2 = hPrevOpen(D, c2); it.hl = pv2.i;
+      it.q = 'What is the last day you can go to ' + P + ' before ' + noteFor(c2.note) + '?';
+      var wl = [[c2.day, CP + ' is closed on ' + c2.day + '.']];
+      D.forEach(function(x){ if (wl.length < 2 && x.i !== pv2.i && x.i !== c2.i && x.status !== 'closed') wl.push([x.day, x.i < pv2.i ? 'You could go then, but there is a later day. Look closer to ' + c2.day + '.' : 'That is after ' + noteFor(c2.note) + '. The question asks for before.']); });
+      if (wl.length < 2) wl.push(['Sunday', 'Look at the day right before ' + c2.day + '.']);
+      it.choices = hChoices(r, pv2.day, wl);
+      it.hint = ['Find the closed day. Then look at the day before it.', CP + ' is closed on ' + c2.day + '. The last open day before that is ' + pv2.day + '.'];
+      it.label = 'Last day before ' + c2.day;
+    } else {
+      if (wk.cat === 'weather'){
+        var storm = wk.kind === 'ice' ? 'An ice storm hit last night.' : wk.kind === 'cold' ? 'It is dangerously cold this morning.' : 'A big snowstorm hit last night.';
+        if (wk.job){
+          it.q = storm + ' How can you find out if work is closed or opening late?';
+          it.choices = hChoices(r, 'Check for a text or call from work, or call my boss', [['Guess and stay home', 'If work is open, you would miss your shift. Check first.'], ['Go in without checking', 'Work might be closed, and the roads may be bad. Check first.']]);
+          it.hint = ['How does your work tell you about closings?', 'Work closings come by text, phone call, or from your boss.'];
+        } else {
+          it.q = storm + ' How can you find out if ' + P + ' is open?';
+          it.choices = hChoices(r, 'Check the website or social media, or call', [['Guess it is open like normal', 'Storms change hours. You could make a trip in bad weather for nothing.'], ['Drive by and look', 'That means going out in bad weather. Check online or call first.']]);
+          it.hint = ['Where do places post weather closings?', 'Websites, social media, the local news, and phone calls tell you about closings.'];
+        }
+      } else if (wk.job){
+        it.q = 'How can you find out if your work schedule changes this week?';
+        it.choices = hChoices(r, 'Ask my boss or check the work schedule', [['Guess', 'Guessing can mean missing work, or showing up when it is closed. Ask or check.'], ['Just show up and see', 'You could make a trip for nothing. Ask your boss or check the schedule first.']]);
+        it.hint = ['Who makes the work schedule?', 'Your boss and the posted schedule tell you when you work.'];
+      } else {
+        it.q = 'How can you find out ' + P + "'s hours this week?";
+        it.choices = hChoices(r, 'Check the sign, the website, or call', [['Guess it is open like normal', 'Hours change for holidays, weather, and other reasons. Guessing can mean a wasted trip.'], ['Just show up and see', 'You could make a trip for nothing. Check first.']]);
+        it.hint = ['Where are hours posted?', 'Signs on the door, websites, and phone calls all tell you the hours.'];
+      }
+      it.label = 'How to find out' + (wk.cat === 'weather' ? ' (weather)' : '');
+    }
+    return it;
+  }
+  function itemLabel(k, it){
+    if (k.charAt(0) === 'h') return it.label + ' (' + it.wk.title + ', ' + it.wk.name + ')';
+    if (k === 'c1') return face(it.m);
+    if (k === 'c2' || k === 'c3') return face(it.arrive) + ' (start ' + face(it.start) + ')';
+    if (k === 't1') return it.card[it.day].day + ' ' + (it.which === 'in' ? 'In' : 'Out');
+    if (k === 't2') return ampm(it.inM) + ' to ' + ampm(it.outM);
+    return it.rows.length + ' days, ' + hrsText(it.total) + ' hrs';
+  }
+  function answerText(k, it){
+    if (k.charAt(0) === 'h'){ for (var z = 0; z < it.choices.length; z++) if (it.choices[z].type === 'ok') return it.choices[z].t; }
+    if (k === 'c1') return face(it.m);
+    if (k === 'c2') return {early:'Early', ontime:'On time', late:'Late'}[it.kind];
+    if (k === 'c3') return it.mins + ' minutes ' + it.kind;
+    if (k === 't1') return ampm(it.which === 'in' ? it.card[it.day].inM : it.card[it.day].outM);
+    if (k === 't2') return hrsText(it.hrs) + ' hours';
+    return hrsText(it.total) + ' hours';
+  }
+  return {rng:rng, ri:ri, pick:pick, shuffle:shuffle, hm:hm, face:face, ampm:ampm, hrsText:hrsText, DAYS:DAYS, META:META, dirOf:dirOf, clockSVG:clockSVG, gen:gen, itemLabel:itemLabel, answerText:answerText, holidayWeek:holidayWeek, hStatus:hStatus, hSpeak:hSpeak, STATUS_ICON:STATUS_ICON};
+})());</script></body></html>
